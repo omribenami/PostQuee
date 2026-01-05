@@ -18,6 +18,18 @@ export const OauthProvider = () => {
         );
       }
       const link = await response.text();
+
+      if (typeof window !== 'undefined' && window.self !== window.top) {
+        const popup = window.open(link, 'generic-oauth-login', 'width=500,height=600');
+        const timer = setInterval(() => {
+          if (popup?.closed) {
+            clearInterval(timer);
+            // Reload main window to pick up the new session
+            window.location.reload();
+          }
+        }, 1000);
+        return;
+      }
       window.location.href = link;
     } catch (error) {
       console.error('Failed to get generic oauth login link:', error);
