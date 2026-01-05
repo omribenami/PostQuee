@@ -220,3 +220,4 @@ docker-compose.local.yml
 # Large binary files
 *.exe
 apps/frontend/public/Antigravity*.exe
+postqueeV3.tar
