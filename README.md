@@ -1,134 +1,298 @@
+# PostQuee
+
 <p align="center">
-  <a href="https://postiz.com/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/765e9d72-3ee7-4a56-9d59-a2c9befe2311">
-    <img alt="Postiz Logo" src="https://github.com/user-attachments/assets/f0d30d70-dddb-4142-8876-e9aa6ed1cb99" width="280"/>
-  </picture>
-  </a>
+  <strong>Your Ultimate AI-Powered Social Media Scheduling Platform</strong>
 </p>
 
 <p align="center">
 <a href="https://opensource.org/license/agpl-v3">
   <img src="https://img.shields.io/badge/License-AGPL%203.0-blue.svg" alt="License">
 </a>
+<a href="https://github.com/omribenami/PostQuee">
+  <img src="https://img.shields.io/github/stars/omribenami/PostQuee?style=social" alt="GitHub stars">
+</a>
 </p>
+
+## Overview
+
+**PostQuee** is a powerful, open-source social media management platform that helps you schedule, manage, and analyze your content across multiple social networks. Built on the solid foundation of Postiz, PostQuee offers an enhanced experience with advanced features for content creators, marketers, and businesses.
+
+### Supported Platforms
 
 <div align="center">
-  <strong>
-  <h2>Your ultimate AI social media scheduling tool</h2><br />
-  <a href="https://postiz.com">Postiz</a>: An alternative to: Buffer.com, Hypefury, Twitter Hunter, etc...<br /><br />
-  </strong>
-  Postiz offers everything you need to manage your social media posts,<br />build an audience, capture leads, and grow your business.
-</div>
-
-<div class="flex" align="center">
-  <br />
   <img alt="Instagram" src="https://postiz.com/svgs/socials/Instagram.svg" width="32">
-  <img alt="Youtube" src="https://postiz.com/svgs/socials/Youtube.svg" width="32">
-  <img alt="Dribbble" src="https://postiz.com/svgs/socials/Dribbble.svg" width="32">
-  <img alt="Linkedin" src="https://postiz.com/svgs/socials/Linkedin.svg" width="32">
-  <img alt="Reddit" src="https://postiz.com/svgs/socials/Reddit.svg" width="32">
-  <img alt="TikTok" src="https://postiz.com/svgs/socials/TikTok.svg" width="32">
+  <img alt="YouTube" src="https://postiz.com/svgs/socials/Youtube.svg" width="32">
+  <img alt="LinkedIn" src="https://postiz.com/svgs/socials/Linkedin.svg" width="32">
+  <img alt="X (Twitter)" src="https://postiz.com/svgs/socials/X.svg" width="32">
   <img alt="Facebook" src="https://postiz.com/svgs/socials/Facebook.svg" width="32">
-  <img alt="Pinterest" src="https://postiz.com/svgs/socials/Pinterest.svg" width="32">
-  <img alt="Threads" src="https://postiz.com/svgs/socials/Threads.svg" width="32">
-  <img alt="X" src="https://postiz.com/svgs/socials/X.svg" width="32">
-  <img alt="Slack" src="https://postiz.com/svgs/socials/Slack.svg" width="32">
+  <img alt="TikTok" src="https://postiz.com/svgs/socials/TikTok.svg" width="32">
+  <img alt="Reddit" src="https://postiz.com/svgs/socials/Reddit.svg" width="32">
   <img alt="Discord" src="https://postiz.com/svgs/socials/Discord.svg" width="32">
+  <img alt="Slack" src="https://postiz.com/svgs/socials/Slack.svg" width="32">
   <img alt="Mastodon" src="https://postiz.com/svgs/socials/Mastodon.svg" width="32">
   <img alt="Bluesky" src="https://postiz.com/svgs/socials/Bluesky.svg" width="32">
+  <img alt="Pinterest" src="https://postiz.com/svgs/socials/Pinterest.svg" width="32">
+  <img alt="Threads" src="https://postiz.com/svgs/socials/Threads.svg" width="32">
+  <img alt="Dribbble" src="https://postiz.com/svgs/socials/Dribbble.svg" width="32">
 </div>
 
-<p align="center">
-  <br />
-  <a href="https://docs.postiz.com" rel="dofollow"><strong>Explore the docs »</strong></a>
-  <br />
+## Features
 
-  <br />
-  <a href="https://youtube.com/@postizofficial" rel="dofollow"><strong>Watch the YouTube Tutorials»</strong></a>
-  <br />
-</p>
+### Core Capabilities
+- **Multi-Platform Scheduling**: Schedule posts across 14+ social media platforms from a single dashboard
+- **AI-Powered Content**: Generate engaging content with integrated AI capabilities
+- **Analytics & Insights**: Track performance metrics and optimize your social media strategy
+- **Team Collaboration**: Invite team members, assign roles, and collaborate on content
+- **Content Marketplace**: Exchange or purchase posts with other users
+- **Media Management**: Upload and organize images, videos, and other media assets
+- **Calendar View**: Visualize your content schedule with an intuitive calendar interface
+- **Bulk Scheduling**: Schedule multiple posts at once to save time
+- **Auto-Posting**: Set up automated posting schedules for consistent engagement
+- **Draft Management**: Save drafts and work on posts at your own pace
 
-<p align="center">
-  <a href="https://platform.postiz.com">Register</a>
-  ·
-  <a href="https://discord.postiz.com">Join Our Discord (devs only)</a>
-  ·
-  <a href="https://docs.postiz.com/public-api">Public API</a><br />
-</p>
-<p align="center">
-  <a href="https://www.npmjs.com/package/@postiz/node">NodeJS SDK</a>
-  ·
-  <a href="https://www.npmjs.com/package/n8n-nodes-postiz">N8N custom node</a>
-  ·
-  <a href="https://apps.make.com/postiz">Make.com integration</a>
-</p>
-
-
-<br />
-
-<p align="center">
-  <video src="https://github.com/user-attachments/assets/05436a01-19c8-4827-b57f-05a5e7637a67" width="100%" />
-</p>
-
-## ✨ Features
-
-| ![Image 1](https://github.com/user-attachments/assets/a27ee220-beb7-4c7e-8c1b-2c44301f82ef) | ![Image 2](https://github.com/user-attachments/assets/eb5f5f15-ed90-47fc-811c-03ccba6fa8a2) |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| ![Image 3](https://github.com/user-attachments/assets/d51786ee-ddd8-4ef8-8138-5192e9cfe7c3) | ![Image 4](https://github.com/user-attachments/assets/91f83c89-22f6-43d6-b7aa-d2d3378289fb) |
-
-# Intro
-
-- Schedule all your social media posts (many AI features)
-- Measure your work with analytics.
-- Collaborate with other team members to exchange or buy posts.
-- Invite your team members to collaborate, comment, and schedule posts.
-- At the moment there is no difference between the hosted version to the self-hosted version
-- Perfect for automation (API) with platforms like N8N, Make.com, Zapier, etc.
+### Advanced Features
+- **API & Webhooks**: Integrate with automation platforms (N8N, Make.com, Zapier)
+- **Custom Integrations**: Build custom workflows with our public API
+- **Third-Party Plugins**: Connect with popular tools and services
+- **URL Shortening**: Integrated support for Dub, Short.io, Kutt, and LinkDrip
+- **Newsletter Integration**: Publish to newsletter platforms
+- **Browser Extension**: Quick posting from anywhere on the web
+- **Multi-Organization**: Manage multiple brands or clients
 
 ## Tech Stack
 
-- NX (Monorepo)
-- NextJS (React)
-- NestJS
-- Prisma (Default to PostgreSQL)
-- Redis (BullMQ)
-- Resend (email notifications)
+PostQuee is built with modern, production-ready technologies:
+
+- **Monorepo**: NX workspace for scalable architecture
+- **Frontend**: Next.js 14 with React 18, Tailwind CSS
+- **Backend**: NestJS with RESTful API
+- **Database**: PostgreSQL with Prisma ORM
+- **Cache/Queue**: Redis with BullMQ
+- **Email**: Resend for transactional emails
+- **AI**: OpenAI integration for content generation
+- **Testing**: Jest with comprehensive test coverage
+- **Monitoring**: Sentry for error tracking
+- **Package Manager**: pnpm 10.6.1
+
+### Architecture
+
+```
+PostQuee/
+├── apps/
+│   ├── backend/       - NestJS API server (port 3000)
+│   ├── frontend/      - Next.js application (port 4200)
+│   ├── workers/       - BullMQ job processors
+│   ├── cron/          - Scheduled tasks
+│   ├── extension/     - Browser extension
+│   ├── commands/      - CLI utilities
+│   └── sdk/           - NodeJS SDK
+├── libraries/
+│   ├── nestjs-libraries/      - Shared backend modules
+│   ├── react-shared-libraries/ - Shared React components
+│   └── helpers/               - Utility functions
+└── CLAUDE.md          - AI development guide
+```
 
 ## Quick Start
 
-To have the project up and running, please follow the [Quick Start Guide](https://docs.postiz.com/quickstart)
+### Prerequisites
 
-## Sponsor Postiz
+- Node.js >= 22.12.0 < 23.0.0
+- pnpm 10.6.1
+- PostgreSQL database
+- Redis server
 
-We now give a few options to Sponsor Postiz:
-- Just a donation: You like what we are building, and want to buy us some coffees so we can build faster.
-- Main Repository: Get your logo with a backlink from the main Postiz repository. Postiz has almost 3m downloads and 20k views per month.
-- Main Repository + Website: Get your logo on the central repository and the main website. Here are some metrics: - Website has 20k hits per month + 65 DR (strong backlink) - Repository has 20k hits per month + Almost 3m docker downloads.
+### Installation
 
-Link: https://opencollective.com/postiz
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/omribenami/PostQuee.git
+   cd PostQuee
+   ```
 
-## Postiz Compliance
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
 
-- Postiz is an open-source, self-hosted social media scheduling tool that supports platforms like X (formerly Twitter), Bluesky, Mastodon, Discord, and others.
-- Postiz hosted service uses official, platform-approved OAuth flows.
-- Postiz does not automate or scrape content from social media platforms.
-- Postiz does not collect, store, or proxy API keys or access tokens from users.
-- Postiz never ask users to paste API keys into our hosted product.
-- Postiz Users always authenticate directly with the social platform (e.g., X, Discord, etc.), ensuring platform compliance and data privacy.
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   ```
 
-## Star History
+   Edit `.env` with your configuration:
+   - `DATABASE_URL`: PostgreSQL connection string
+   - `REDIS_URL`: Redis connection string
+   - `JWT_SECRET`: Secret for JWT token generation
+   - `FRONTEND_URL`: Frontend URL (default: http://localhost:4200)
+   - `NEXT_PUBLIC_BACKEND_URL`: Backend API URL (default: http://localhost:3000)
+   - `BACKEND_INTERNAL_URL`: Internal backend URL (default: http://localhost:3000)
 
-[![Star History Chart](https://api.star-history.com/svg?repos=gitroomhq/postiz-app&type=date&legend=top-left)](https://www.star-history.com/#gitroomhq/postiz-app&type=date&legend=top-left)
+4. **Set up the database**
+   ```bash
+   pnpm run prisma-generate
+   pnpm run prisma-db-push
+   ```
+
+5. **Start the development server**
+   ```bash
+   pnpm run dev
+   ```
+
+   This will start:
+   - Frontend: http://localhost:4200
+   - Backend API: http://localhost:3000
+   - Workers: Background job processors
+   - Cron: Scheduled task runners
+
+### Using Docker (Recommended for Local Development)
+
+Start PostgreSQL and Redis with Docker:
+```bash
+pnpm run dev:docker
+```
+
+## Development
+
+### Available Commands
+
+```bash
+# Development
+pnpm run dev                    # Run all services
+pnpm run dev:backend            # Backend only
+pnpm run dev:frontend           # Frontend only
+pnpm run dev:workers            # Workers only
+pnpm run dev:cron               # Cron only
+
+# Building
+pnpm run build                  # Build all apps
+pnpm run build:backend          # Build backend
+pnpm run build:frontend         # Build frontend
+pnpm run build:extension        # Build browser extension
+
+# Production
+pnpm run start:prod:backend     # Start backend in production
+pnpm run start:prod:frontend    # Start frontend in production
+pnpm run pm2                    # Run with PM2 process manager
+
+# Database
+pnpm run prisma-generate        # Generate Prisma client
+pnpm run prisma-db-push         # Push schema changes
+pnpm run prisma-db-pull         # Pull schema from database
+
+# Testing
+pnpm test                       # Run tests with coverage
+```
+
+### Project Structure
+
+- **Backend Services**: Located in `apps/backend/src/api/routes/`
+- **Frontend Pages**: Using Next.js App Router in `apps/frontend/src/app/`
+- **Shared Libraries**: Reusable modules in `libraries/`
+- **Database Schema**: Prisma schema at `libraries/nestjs-libraries/src/database/prisma/schema.prisma`
+
+## Configuration
+
+PostQuee supports extensive configuration through environment variables:
+
+### Essential Configuration
+- `DATABASE_URL` - PostgreSQL connection
+- `REDIS_URL` - Redis connection
+- `JWT_SECRET` - Authentication secret
+- `FRONTEND_URL` - Frontend application URL
+- `NEXT_PUBLIC_BACKEND_URL` - Backend API URL
+
+### Optional Integrations
+- **Storage**: Cloudflare R2 or local storage (`STORAGE_PROVIDER`)
+- **Email**: Resend API key
+- **AI**: OpenAI API key
+- **Payment**: Stripe keys for subscriptions
+- **OAuth**: Client credentials for each social platform
+- **Monitoring**: Sentry DSN
+
+See `.env.example` for a complete list of configuration options.
+
+## API & Integrations
+
+### Public API
+PostQuee provides a RESTful API for programmatic access:
+- Rate limiting: 30 requests/hour (configurable via `API_LIMIT`)
+- Authentication: Bearer token
+- Documentation: Available in the application
+
+### SDK & Integrations
+- **NodeJS SDK**: `@postiz/node` on npm
+- **N8N**: Custom node available
+- **Make.com**: Official integration
+- **Webhooks**: Event-driven integrations
+
+### Automation Examples
+```javascript
+// NodeJS SDK example
+import { PostizClient } from '@postiz/node';
+
+const client = new PostizClient({ apiKey: 'your-api-key' });
+
+await client.posts.create({
+  content: 'Hello from PostQuee!',
+  platforms: ['twitter', 'linkedin'],
+  scheduledAt: '2024-01-15T10:00:00Z'
+});
+```
+
+## Contributing
+
+We welcome contributions! Here's how you can help:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Coding Standards
+- Use TypeScript throughout
+- Follow conventional commits (feat:, fix:, docs:, etc.)
+- Add tests for new features
+- Document API changes
+- Update `.env.example` for new environment variables
+
+## Security
+
+PostQuee takes security seriously:
+
+- All user authentication uses official OAuth flows
+- No API keys or tokens are stored insecurely
+- Direct platform authentication ensures compliance
+- Regular security audits and updates
+- AGPL-3.0 license ensures transparency
+
+Found a security issue? Please email security@postquee.com (do not open a public issue).
+
+## Platform Compliance
+
+- Uses official, platform-approved OAuth flows
+- No scraping or unauthorized automation
+- No proxy of API keys or access tokens
+- Users authenticate directly with platforms
+- Full compliance with platform terms of service
+
+## Acknowledgments
+
+PostQuee is built on the excellent foundation of [Postiz](https://github.com/gitroomhq/postiz-app), an open-source social media scheduling tool. We're grateful to the Postiz team and community for their amazing work.
 
 ## License
 
-This repository's source code is available under the [AGPL-3.0 license](LICENSE).
+This project is licensed under the [AGPL-3.0 License](LICENSE) - see the LICENSE file for details.
 
-<br /><br /><br />
+## Support
+
+- **Documentation**: Coming soon
+- **Issues**: [GitHub Issues](https://github.com/omribenami/PostQuee/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/omribenami/PostQuee/discussions)
+
+---
 
 <p align="center">
-  <a href="https://www.g2.com/products/postiz/take_survey" target="blank"><img alt="g2" src="https://github.com/user-attachments/assets/892cb74c-0b49-4589-b2f5-fbdbf7a98f66" /></a>
+  Made with ❤️ by the PostQuee Team
 </p>
-# PostQuee
-# PostQuee

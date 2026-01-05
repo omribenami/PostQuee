@@ -1,14 +1,80 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# compiled output
+# ============================================
+# CRITICAL: Environment & Secret Files
+# ============================================
+.env
+.env.*
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+*.env
+*.env.*
+.secrets/
+secrets/
+secret.*
+*.secret
+.secret
+
+# API Keys and Tokens
+**/apikeys/
+**/*apikey*
+**/*api-key*
+**/*api_key*
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.pub
+id_rsa*
+*.ppk
+credentials.json
+google-credentials.json
+serviceAccountKey.json
+firebase-adminsdk*.json
+aws-credentials
+gcp-credentials.json
+
+# OAuth & JWT
+jwt.secret
+oauth-tokens.json
+refresh-tokens.json
+
+# Database credentials
+database.yml
+database.json
+db-credentials.*
+
+# ============================================
+# Compiled Output
+# ============================================
 dist
 tmp
 /out-tsc
-.env
-# dependencies
-node_modules
+build
+*.tsbuildinfo
+*.tsbuildinfo.*
 
-# IDEs and editors
+# ============================================
+# Dependencies
+# ============================================
+node_modules
+.pnp
+.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# ============================================
+# IDEs and Editors
+# ============================================
 /.idea
 .project
 .classpath
@@ -16,45 +82,137 @@ node_modules
 *.launch
 .settings/
 *.sublime-workspace
+*.sublime-project
 .vscode/*
 
-# IDE - VSCode
+# IDE - VSCode (allow specific files)
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# misc
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
-/typings
-
+# ============================================
 # System Files
+# ============================================
 .DS_Store
 Thumbs.db
-
-.nx/cache
-.nx/workspace-data
-
-# Next.js
-.next
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
 
 # Vim files
 **/*.swp
 **/*.swo
+*~
 
-# Temporary files
+# ============================================
+# NX Workspace
+# ============================================
+.nx/cache
+.nx/workspace-data
+
+# ============================================
+# Next.js
+# ============================================
+.next
+out
+
+# ============================================
+# Testing & Coverage
+# ============================================
+/coverage
+/reports
+/.nyc_output
+junit.xml
+
+# ============================================
+# Logs
+# ============================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+pm2.log
+pm2-error.log
+
+# ============================================
+# PM2
+# ============================================
+.pm2
+ecosystem.config.js.local
+
+# ============================================
+# Cache
+# ============================================
+.cache
+.parcel-cache
+.turbo
+i18n.cache
+.eslintcache
+
+# ============================================
+# Database Files
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+prisma/migrations/
+*.sql.gz
+
+# Redis dumps
+dump.rdb
+appendonly.aof
+
+# ============================================
+# Uploads & Media
+# ============================================
+uploads/
+media/
+public/uploads/
+user-uploads/
+
+# ============================================
+# Backups & Temporary Files
+# ============================================
+*.bak
+*.backup
+*.tmp
+*.temp
 *.orig
 *.~*~
-*.tsbuildinfo
+*.swp
+*.swo
 
-# ignore Secrets folder
-.secrets/
+# ============================================
+# Miscellaneous
+# ============================================
+/.sass-cache
+/connect.lock
+/libpeerconnection.log
+testem.log
+/typings
+
+# Libraries
 libraries/plugins/src/plugins.ts
-i18n.cache
+
+# Docker override files (may contain secrets)
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Kubernetes secrets
+*-secret.yaml
+*-secrets.yaml
