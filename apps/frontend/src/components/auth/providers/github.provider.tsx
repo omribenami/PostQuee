@@ -6,6 +6,16 @@ export const GithubProvider = () => {
   const t = useT();
   const gotoLogin = useCallback(async () => {
     const link = await (await fetch('/auth/oauth/GITHUB')).text();
+    if (typeof window !== 'undefined' && window.self !== window.top) {
+      const popup = window.open(link, 'github-login', 'width=500,height=600');
+      const timer = setInterval(() => {
+        if (popup?.closed) {
+          clearInterval(timer);
+          window.location.reload();
+        }
+      }, 1000);
+      return;
+    }
     window.location.href = link;
   }, []);
   return (
