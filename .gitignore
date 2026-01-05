@@ -216,3 +216,7 @@ docker-compose.local.yml
 # Kubernetes secrets
 *-secret.yaml
 *-secrets.yaml
+
+# Large binary files
+*.exe
+apps/frontend/public/Antigravity*.exe
