@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useModals } from '@gitroom/frontend/components/layout/new-modal';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { AddEditModal } from '@gitroom/frontend/components/new-launch/add.edit.modal';
@@ -19,55 +19,62 @@ export const WPPostMessageListener = () => {
         revalidateOnFocus: false,
     });
 
+    const pendingMessage = useRef<any>(null);
+
+    // Helper to process the message and open modal
+    const processMessage = (data: any) => {
+        const { post_title, post_url, featured_image, excerpt } = data;
+        const content = `${post_title}\n\n${excerpt}\n\n${post_url}`;
+        const media = featured_image ? [{ id: 'wp-import', path: featured_image }] : [];
+        const date = dayjs();
+
+        modal.openModal({
+            id: 'add-edit-modal-wp',
+            closeOnClickOutside: false,
+            removeLayout: true,
+            closeOnEscape: false,
+            withCloseButton: false,
+            askClose: true,
+            fullScreen: true,
+            classNames: {
+                modal: 'w-[100%] max-w-[1400px] text-textColor',
+            },
+            children: (
+                <AddEditModal
+                    allIntegrations={integrations?.map((p: any) => ({ ...p })) || []}
+                    integrations={integrations || []}
+                    date={date}
+                    reopenModal={() => { }}
+                    mutate={() => { }}
+                    onlyValues={[{
+                        content: content,
+                        image: media
+                    }]}
+                />
+            ),
+            size: '80%',
+            title: ``,
+        });
+    };
+
+    // Effect to process pending message once integrations are loaded
+    useEffect(() => {
+        if (integrations && integrations.length > 0 && pendingMessage.current) {
+            console.log('PostQuee: Integrations loaded, processing pending message.');
+            processMessage(pendingMessage.current);
+            pendingMessage.current = null;
+        }
+    }, [integrations, modal]);
+
     useEffect(() => {
         const handleMessage = async (event: MessageEvent) => {
-            // Check for specific message type
             if (event.data?.type === 'create-post-from-wp' && event.data?.data) {
-                if (!integrations) {
-                    console.warn('PostQuee: Integrations not loaded yet, ignoring WP message');
+                if (!integrations || integrations.length === 0) {
+                    console.log('PostQuee: Integrations not ready, buffering message.');
+                    pendingMessage.current = event.data.data;
                     return;
                 }
-
-                const { post_title, post_url, featured_image, excerpt } = event.data.data;
-
-                // Construct standard HTML content
-                const content = `${post_title}\n\n${excerpt}\n\n${post_url}`;
-
-                // Simple media object structure - PostQuee/Postiz handles media differently, usually expects uploaded ID or path
-                // For external images, we might pass the URL directly if supported, or we might need to upload it.
-                // Postiz seems to support 'path' in media object.
-                const media = featured_image ? [{ id: 'wp-import', path: featured_image }] : [];
-
-                // We use current date/time
-                const date = dayjs();
-
-                modal.openModal({
-                    id: 'add-edit-modal-wp',
-                    closeOnClickOutside: false,
-                    removeLayout: true,
-                    closeOnEscape: false,
-                    withCloseButton: false,
-                    askClose: true,
-                    fullScreen: true,
-                    classNames: {
-                        modal: 'w-[100%] max-w-[1400px] text-textColor',
-                    },
-                    children: (
-                        <AddEditModal
-                            allIntegrations={integrations?.map((p: any) => ({ ...p })) || []}
-                            integrations={integrations || []}
-                            date={date}
-                            reopenModal={() => { }}
-                            mutate={() => { }}
-                            onlyValues={[{
-                                content: content,
-                                image: media
-                            }]}
-                        />
-                    ),
-                    size: '80%',
-                    title: ``,
-                });
+                processMessage(event.data.data);
             }
         };
 
