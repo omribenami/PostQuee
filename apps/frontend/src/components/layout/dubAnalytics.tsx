@@ -6,14 +6,8 @@ import { getCookie } from 'react-use-cookie';
 
 export const DubAnalytics = () => {
   const { dub } = useVariables();
-  if (!dub) return null;
-  return (
-    <DubAnalyticsIn
-      domainsConfig={{
-        refer: 'affiliate.postiz.com',
-      }}
-    />
-  );
+  // Disabled for white-label deployment
+  return null;
 };
 
 export const useDubClickId = () => {

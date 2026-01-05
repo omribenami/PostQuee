@@ -1,6 +1,25 @@
 import React from 'react';
+import { getBrandConfig } from '../../utils/brand-config';
+import Image from 'next/image';
 
 export const LogoTextComponent = () => {
+  const { appLogo, appName } = getBrandConfig();
+
+  if (appLogo) {
+    return (
+      <div className="flex items-center gap-2">
+        <Image
+          src={appLogo}
+          alt={appName}
+          width={33}
+          height={33}
+          className="object-contain"
+        />
+        <div className="text-xl font-bold text-primary">{appName}</div>
+      </div>
+    );
+  }
+
   return (
     <svg
       width="101"

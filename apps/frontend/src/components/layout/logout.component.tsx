@@ -1,4 +1,5 @@
 'use client';
+import { getBrandConfig } from '../../utils/brand-config';
 
 import { useCallback } from 'react';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
@@ -34,7 +35,7 @@ export const LogoutComponent = () => {
   return (
     <div className="text-red-400 cursor-pointer" onClick={logout}>
       {t('logout_from', 'Logout from')}
-      {isGeneral ? ' Postiz' : ' Gitroom'}
+      {t('logout_from', 'Logout from')} {isGeneral ? getBrandConfig().appName : getBrandConfig().appName}
     </div>
   );
 };

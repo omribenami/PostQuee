@@ -659,5 +659,14 @@
   "delete_post_tooltip": "Eliminar publicación",
   "drop_files_here_to_upload": "Suelta tus archivos aquí para subirlos",
   "insert_emoji": "Insertar emoji",
-  "write_something": "Escribe algo…"
+  "write_something": "Escribe algo…",
+  "publish_on_wordpress": "Publica en WordPress.",
+  "trend_on_social": "Destaca en Redes.",
+  "ultimate_scheduler_description": "El programador automático definitivo para Creadores y Agencias. Formatea, optimiza y programa automáticamente tus publicaciones para LinkedIn, Facebook, Instagram y X.",
+  "seamless_integration": "Integración Perfecta",
+  "native_wordpress_plugin": "Plugin nativo de WordPress que se siente parte de tu panel.",
+  "smart_ai_formatting": "Formato IA Inteligente",
+  "auto_generate_captions": "Genera automáticamente subtítulos y hashtags adaptados para cada plataforma.",
+  "unified_analytics": "Analíticas Unificadas",
+  "track_engagement": "Rastrea participación, me gusta y compartidos en todas las redes conectadas."
 }

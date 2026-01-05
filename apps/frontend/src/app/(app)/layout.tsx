@@ -1,16 +1,21 @@
 import { SentryComponent } from '@gitroom/frontend/components/layout/sentry.component';
+import { Metadata } from 'next';
+import { getBrandConfig } from '../../utils/brand-config';
+
+export const metadata: Metadata = {
+  title: `${getBrandConfig().appName} - Automate your social presence`,
+  description: 'The ultimate auto-scheduler for Creators and Agencies. Automatically format, optimize, and schedule your posts across all major social platforms.',
+};
 
 export const dynamic = 'force-dynamic';
 import '../global.scss';
 import 'react-tooltip/dist/react-tooltip.css';
 import '@copilotkit/react-ui/styles.css';
 import LayoutContext from '@gitroom/frontend/components/layout/layout.context';
-import { ReactNode } from 'react';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { ReactNode, Fragment } from 'react';
 import PlausibleProvider from 'next-plausible';
 import clsx from 'clsx';
 import { VariableContextComponent } from '@gitroom/react/helpers/variable.context';
-import { Fragment } from 'react';
 import { PHProvider } from '@gitroom/react/helpers/posthog';
 import UtmSaver from '@gitroom/helpers/utils/utm.saver';
 import { DubAnalytics } from '@gitroom/frontend/components/layout/dubAnalytics';
@@ -18,19 +23,14 @@ import { FacebookComponent } from '@gitroom/frontend/components/layout/facebook.
 import { headers } from 'next/headers';
 import { headerName } from '@gitroom/react/translation/i18n.config';
 import { HtmlComponent } from '@gitroom/frontend/components/layout/html.component';
-// import dynamicLoad from 'next/dynamic';
-// const SetTimezone = dynamicLoad(
-//   () => import('@gitroom/frontend/components/layout/set.timezone'),
-//   {
-//     ssr: false,
-//   }
-// );
 
-const jakartaSans = Plus_Jakarta_Sans({
-  weight: ['600', '500'],
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-});
+// import { Plus_Jakarta_Sans } from 'next/font/google';
+// const jakartaSans = Plus_Jakarta_Sans({
+//   weight: ['600', '500'],
+//   style: ['normal', 'italic'],
+//   subsets: ['latin'],
+// });
+const jakartaSans = { className: '' };
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const allHeaders = headers();
@@ -73,9 +73,9 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           transloadit={
             process.env.TRANSLOADIT_AUTH && process.env.TRANSLOADIT_TEMPLATE
               ? [
-                  process.env.TRANSLOADIT_AUTH!,
-                  process.env.TRANSLOADIT_TEMPLATE!,
-                ]
+                process.env.TRANSLOADIT_AUTH!,
+                process.env.TRANSLOADIT_TEMPLATE!,
+              ]
               : []
           }
         >
@@ -85,7 +85,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
             <DubAnalytics />
             <FacebookComponent />
             <Plausible
-              domain={!!process.env.IS_GENERAL ? 'postiz.com' : 'gitroom.com'}
+              domain={!!process.env.IS_GENERAL ? 'postquee.com' : 'gitroom.com'}
             >
               <PHProvider
                 phkey={process.env.NEXT_PUBLIC_POSTHOG_KEY}

@@ -67,7 +67,7 @@ export const AgentChat: FC = () => {
             className="w-full h-full"
             labels={{
               title: t('your_assistant', 'Your Assistant'),
-              initial: t('agent_welcome_message', `Hello, I am your Postiz agent 🙌🏻.
+              initial: t('agent_welcome_message', `Hello, I am your PostQuee agent 🙌🏻.
               
 I can schedule a post or multiple posts to multiple channels and generate pictures and videos.
 
@@ -157,32 +157,31 @@ const NewInput: FC<InputProps> = (props) => {
         onSend={(text) => {
           const send = props.onSend(
             text +
-              (media.length > 0
-                ? '\n[--Media--]' +
-                  media
-                    .map((m) =>
-                      m.path.indexOf('mp4') > -1
-                        ? `Video: ${m.path}`
-                        : `Image: ${m.path}`
-                    )
-                    .join('\n') +
-                  '\n[--Media--]'
-                : '') +
-              `
-${
-  properties.length
-    ? `[--integrations--]
+            (media.length > 0
+              ? '\n[--Media--]' +
+              media
+                .map((m) =>
+                  m.path.indexOf('mp4') > -1
+                    ? `Video: ${m.path}`
+                    : `Image: ${m.path}`
+                )
+                .join('\n') +
+              '\n[--Media--]'
+              : '') +
+            `
+${properties.length
+              ? `[--integrations--]
 Use the following social media platforms: ${JSON.stringify(
-        properties.map((p) => ({
-          id: p.id,
-          platform: p.identifier,
-          profilePicture: p.picture,
-          additionalSettings: p.additionalSettings,
-        }))
-      )}
+                properties.map((p) => ({
+                  id: p.id,
+                  platform: p.identifier,
+                  profilePicture: p.picture,
+                  additionalSettings: p.additionalSettings,
+                }))
+              )}
 [--integrations--]`
-    : ``
-}`
+              : ``
+            }`
           );
           setValue('');
           setMedia([]);
@@ -338,7 +337,7 @@ const OpenModal: FC<{
                     path: a.path,
                   })),
                 }))}
-                reopenModal={() => {}}
+                reopenModal={() => { }}
                 mutate={() => res(true)}
               />
             </ExistingDataContextProvider>

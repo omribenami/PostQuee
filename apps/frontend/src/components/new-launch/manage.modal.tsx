@@ -100,20 +100,20 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
     const currentIntegration = integrations.find((p) => p.id === current)!;
 
     return (
-        <div className="flex items-center gap-[10px]">
-          <div className="relative">
-            <img
-              src={`/icons/platforms/${currentIntegration.identifier}.png`}
-              className="w-[20px] h-[20px] rounded-[4px]"
-              alt={currentIntegration.identifier}
-            />
-            <SettingsIcon
-              size={15}
-              className="text-white absolute -end-[5px] -bottom-[5px]"
-            />
-          </div>
-          <div>{currentIntegration.name} {t('channel_settings', 'Settings')}</div>
+      <div className="flex items-center gap-[10px]">
+        <div className="relative">
+          <img
+            src={`/icons/platforms/${currentIntegration.identifier}.png`}
+            className="w-[20px] h-[20px] rounded-[4px]"
+            alt={currentIntegration.identifier}
+          />
+          <SettingsIcon
+            size={15}
+            className="text-white absolute -end-[5px] -bottom-[5px]"
+          />
         </div>
+        <div>{currentIntegration.name} {t('channel_settings', 'Settings')}</div>
+      </div>
     );
   }, [current]);
 
@@ -192,8 +192,8 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
         for (const item of notEnoughChars) {
           toaster.show(
             '' +
-              item.integration.name +
-              ' ' + t('post_needs_content_or_image', 'Your post should have at least one character or one image.'),
+            item.integration.name +
+            ' ' + t('post_needs_content_or_image', 'Your post should have at least one character or one image.'),
             'warning'
           );
           setLoading(false);
@@ -212,8 +212,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
 
           if (item.errors !== true) {
             toaster.show(
-              `${capitalize(item.integration.identifier.split('-')[0])} (${
-                item.integration.name
+              `${capitalize(item.integration.identifier.split('-')[0])} (${item.integration.name
               }): ${item.errors}`,
               'warning'
             );
@@ -252,22 +251,22 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
       const shortLinkUrl = dummy
         ? { ask: false }
         : await (
-            await fetch('/posts/should-shortlink', {
-              method: 'POST',
-              body: JSON.stringify({
-                messages: checkAllValid.flatMap((p: any) =>
-                  p.values.flatMap((a: any) => a.content)
-                ),
-              }),
-            })
-          ).json();
+          await fetch('/posts/should-shortlink', {
+            method: 'POST',
+            body: JSON.stringify({
+              messages: checkAllValid.flatMap((p: any) =>
+                p.values.flatMap((a: any) => a.content)
+              ),
+            }),
+          })
+        ).json();
 
       const shortLink = !shortLinkUrl.ask
         ? false
         : await deleteDialog(
-            t('shortlink_urls_question', 'Do you want to shortlink the URLs? it will let you get statistics over clicks'),
-            t('yes_shortlink_it', 'Yes, shortlink it!')
-          );
+          t('shortlink_urls_question', 'Do you want to shortlink the URLs? it will let you get statistics over clicks'),
+          t('yes_shortlink_it', 'Yes, shortlink it!')
+        );
 
       const group = existingData.group || makeId(10);
       const data = {
@@ -319,9 +318,9 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
         addEditSets
           ? addEditSets(data)
           : await fetch('/posts', {
-              method: 'POST',
-              body: JSON.stringify(data),
-            });
+            method: 'POST',
+            body: JSON.stringify(data),
+          });
 
         if (!addEditSets) {
           mutate();
@@ -401,7 +400,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                   <div
                     onClick={() => setShowSettings(!showSettings)}
                     className={clsx(
-                      'bg-[#612BD3] rounded-[12px] flex items-center gap-[8px] cursor-pointer p-[12px]',
+                      'bg-[#FF8C00] rounded-[12px] flex items-center gap-[8px] cursor-pointer p-[12px]',
                       showSettings ? '!rounded-b-none' : ''
                     )}
                   >
@@ -493,7 +492,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
             )}
             {addEditSets && (
               <button
-                className="text-white text-[15px] font-[600] min-w-[180px] btnSub disabled:cursor-not-allowed disabled:opacity-80 outline-none gap-[8px] flex justify-center items-center h-[44px] rounded-[8px] bg-[#612BD3] ps-[20px] pe-[16px]"
+                className="text-white text-[15px] font-[600] min-w-[180px] btnSub disabled:cursor-not-allowed disabled:opacity-80 outline-none gap-[8px] flex justify-center items-center h-[44px] rounded-[8px] bg-[#FF8C00] ps-[20px] pe-[16px]"
                 disabled={
                   selectedIntegrations.length === 0 || loading || locked
                 }
@@ -509,18 +508,18 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                     selectedIntegrations.length === 0 || loading || locked
                   }
                   onClick={schedule('schedule')}
-                  className="text-white min-w-[180px] btnSub disabled:cursor-not-allowed disabled:opacity-80 outline-none gap-[8px] flex justify-center items-center h-[44px] rounded-[8px] bg-[#612BD3] ps-[20px] pe-[16px]"
+                  className="text-white min-w-[180px] btnSub disabled:cursor-not-allowed disabled:opacity-80 outline-none gap-[8px] flex justify-center items-center h-[44px] rounded-[8px] bg-[#FF8C00] ps-[20px] pe-[16px]"
                 >
                   <div className="text-[15px] font-[600]">
                     {selectedIntegrations.length === 0
                       ? t('check_circles_above', 'Check the circles above')
                       : dummy
-                      ? t('create_output', 'Create output')
-                      : !existingData?.integration
-                      ? t('add_to_calendar', 'Add to calendar')
-                      : existingData?.posts?.[0]?.state === 'DRAFT'
-                      ? t('schedule', 'Schedule')
-                      : t('update', 'Update')}
+                        ? t('create_output', 'Create output')
+                        : !existingData?.integration
+                          ? t('add_to_calendar', 'Add to calendar')
+                          : existingData?.posts?.[0]?.state === 'DRAFT'
+                            ? t('schedule', 'Schedule')
+                            : t('update', 'Update')}
                   </div>
                   {!dummy && (
                     <div className="flex justify-center items-center h-[20px] w-[20px] pt-[4px] arrow-change">
