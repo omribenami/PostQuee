@@ -293,6 +293,18 @@ This project is licensed under the [AGPL-3.0 License](LICENSE) - see the LICENSE
 
 ---
 
+## Legal Disclosure & Credits
+
+PostQuee is a customized distribution of the open-source project **Postiz**, developed by Gitroom. This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+
+As PostQuee is provided as a network service (SaaS), the complete source code for this version is made available via this repository in compliance with the AGPL-3.0 requirements.
+
+**Original project credit**: [https://github.com/gitroomhq/postiz-app](https://github.com/gitroomhq/postiz-app)
+
+All modifications and customizations made to create PostQuee are also licensed under AGPL-3.0 and are available in this repository. Users interacting with PostQuee over a network have the right to receive the complete corresponding source code.
+
+---
+
 <p align="center">
   Made with ❤️ by the PostQuee Team
 </p>
