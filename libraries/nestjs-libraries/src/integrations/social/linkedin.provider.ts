@@ -111,64 +111,108 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
     codeVerifier: string;
     refresh?: string;
   }) {
-    const body = new URLSearchParams();
-    body.append('grant_type', 'authorization_code');
-    body.append('code', params.code);
-    body.append(
-      'redirect_uri',
-      `${process.env.FRONTEND_URL}/integrations/social/linkedin${
-        params.refresh ? `?refresh=${params.refresh}` : ''
-      }`
-    );
-    body.append('client_id', process.env.LINKEDIN_CLIENT_ID!);
-    body.append('client_secret', process.env.LINKEDIN_CLIENT_SECRET!);
+    try {
+      const body = new URLSearchParams();
+      body.append('grant_type', 'authorization_code');
+      body.append('code', params.code);
+      body.append(
+        'redirect_uri',
+        `${process.env.FRONTEND_URL}/integrations/social/linkedin${
+          params.refresh ? `?refresh=${params.refresh}` : ''
+        }`
+      );
+      body.append('client_id', process.env.LINKEDIN_CLIENT_ID!);
+      body.append('client_secret', process.env.LINKEDIN_CLIENT_SECRET!);
 
-    const {
-      access_token: accessToken,
-      expires_in: expiresIn,
-      refresh_token: refreshToken,
-      scope,
-    } = await (
-      await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
+      const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body,
-      })
-    ).json();
+      });
 
-    this.checkScopes(this.scopes, scope);
+      const tokenData = await tokenResponse.json();
 
-    const {
-      name,
-      sub: id,
-      picture,
-    } = await (
-      await fetch('https://api.linkedin.com/v2/userinfo', {
+      // Check for OAuth error response
+      if (tokenData.error) {
+        console.error('LinkedIn OAuth error:', tokenData);
+        return `LinkedIn authorization failed: ${tokenData.error_description || tokenData.error}`;
+      }
+
+      // Validate required fields
+      if (!tokenData.access_token) {
+        console.error('LinkedIn token response missing access_token:', tokenData);
+        return 'LinkedIn authorization failed: No access token received';
+      }
+
+      const {
+        access_token: accessToken,
+        expires_in: expiresIn,
+        refresh_token: refreshToken,
+        scope,
+      } = tokenData;
+
+      // Validate scopes
+      try {
+        this.checkScopes(this.scopes, scope);
+      } catch (err) {
+        return 'Missing required LinkedIn permissions. Please grant all requested permissions and try again.';
+      }
+
+      // Fetch user info
+      const userinfoResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      })
-    ).json();
+      });
 
-    const { vanityName } = await (
-      await fetch('https://api.linkedin.com/v2/me', {
+      if (!userinfoResponse.ok) {
+        console.error('LinkedIn userinfo API error:', userinfoResponse.status);
+        return `Failed to fetch LinkedIn profile: ${userinfoResponse.statusText}`;
+      }
+
+      const userinfoData = await userinfoResponse.json();
+
+      if (!userinfoData.sub || !userinfoData.name) {
+        console.error('LinkedIn userinfo missing required fields:', userinfoData);
+        return 'Failed to retrieve LinkedIn profile information';
+      }
+
+      const {
+        name,
+        sub: id,
+        picture,
+      } = userinfoData;
+
+      // Fetch vanity name
+      const meResponse = await fetch('https://api.linkedin.com/v2/me', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      })
-    ).json();
+      });
 
-    return {
-      id,
-      accessToken,
-      refreshToken,
-      expiresIn,
-      name,
-      picture,
-      username: vanityName,
-    };
+      if (!meResponse.ok) {
+        console.error('LinkedIn me API error:', meResponse.status);
+        // Continue without vanityName - it's not critical
+      }
+
+      const meData = await meResponse.json();
+      const { vanityName } = meData || {};
+
+      return {
+        id,
+        accessToken,
+        refreshToken,
+        expiresIn,
+        name,
+        picture,
+        username: vanityName || id,
+      };
+    } catch (error) {
+      console.error('LinkedIn authentication error:', error);
+      return `Failed to connect to LinkedIn: ${error.message || 'Unknown error'}`;
+    }
   }
 
   async company(token: string, data: { url: string }) {
