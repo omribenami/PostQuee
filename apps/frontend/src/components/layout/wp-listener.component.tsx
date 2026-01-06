@@ -13,11 +13,13 @@ export const WPPostMessageListener = () => {
     const { isGeneral } = useVariables();
 
     // Fetch integrations as we need them for the modal
-    const { data: integrations } = useSWR('/integrations', async (url) => {
+    const { data: integrationsData } = useSWR('/integrations', async (url) => {
         return (await fetch(url)).json();
     }, {
         revalidateOnFocus: false,
     });
+
+    const integrations = Array.isArray(integrationsData) ? integrationsData : [];
 
     const pendingMessage = useRef<any>(null);
 
@@ -41,8 +43,8 @@ export const WPPostMessageListener = () => {
             },
             children: (
                 <AddEditModal
-                    allIntegrations={Array.isArray(integrations) ? integrations.map((p: any) => ({ ...p })) : []}
-                    integrations={Array.isArray(integrations) ? integrations : []}
+                    allIntegrations={integrations.map((p: any) => ({ ...p }))}
+                    integrations={integrations}
                     date={date}
                     reopenModal={() => { }}
                     mutate={() => { }}
