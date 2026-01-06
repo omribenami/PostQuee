@@ -65,7 +65,7 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
     refreshWhenHidden: false,
   });
 
-  if (!user) return null;
+  if (!user || !user.id) return null;
 
   // Auto-close popup if this is a successful login flow initiated by the iframe
   // eslint-disable-next-line react-hooks/rules-of-hooks
