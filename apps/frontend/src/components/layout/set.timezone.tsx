@@ -12,7 +12,11 @@ export const getTimezone = () => {
   if (typeof window === 'undefined') {
     return dayjs.tz.guess();
   }
-  return localStorage.getItem('timezone') || dayjs.tz.guess();
+  try {
+    return localStorage.getItem('timezone') || dayjs.tz.guess();
+  } catch (e) {
+    return dayjs.tz.guess();
+  }
 };
 
 export const newDayjs = (config?: ConfigType) => {
@@ -31,8 +35,12 @@ const SetTimezone: FC = () => {
 
       return result;
     };
-    if (localStorage.getItem('timezone')) {
-      dayjs.tz.setDefault(getTimezone());
+    try {
+      if (localStorage.getItem('timezone')) {
+        dayjs.tz.setDefault(getTimezone());
+      }
+    } catch (e) {
+      console.error('Failed to set timezone from localStorage', e);
     }
   }, []);
   return null;
