@@ -289,7 +289,8 @@ export class LinkedinPageProvider
       };
     } catch (error) {
       console.error('LinkedIn Page authentication error:', error);
-      return `Failed to connect to LinkedIn Page: ${error.message || 'Unknown error'}`;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return `Failed to connect to LinkedIn Page: ${errorMessage}`;
     }
   }
 

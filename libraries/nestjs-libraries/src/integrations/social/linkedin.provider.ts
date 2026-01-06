@@ -211,7 +211,8 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
       };
     } catch (error) {
       console.error('LinkedIn authentication error:', error);
-      return `Failed to connect to LinkedIn: ${error.message || 'Unknown error'}`;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return `Failed to connect to LinkedIn: ${errorMessage}`;
     }
   }
 
