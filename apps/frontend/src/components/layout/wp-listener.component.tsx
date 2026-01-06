@@ -92,15 +92,28 @@ export const WPPostMessageListener = () => {
 
     useEffect(() => {
         const handleMessage = async (event: MessageEvent) => {
+            console.log('[PostQuee App] Received postMessage:', event.data);
+            console.log('[PostQuee App] Event origin:', event.origin);
+
             if (event.data?.type === 'create-post-from-wp' && event.data?.data) {
-                if (!integrations) {
-                    console.log('PostQuee: Integrations not ready, buffering message.');
+                console.log('[PostQuee App] WordPress message detected!');
+                console.log('[PostQuee App] Message data:', event.data.data);
+                console.log('[PostQuee App] Integrations loaded:', !!integrations);
+                console.log('[PostQuee App] Integrations length:', integrations?.length);
+
+                if (!integrations || integrations.length === 0) {
+                    console.log('[PostQuee App] Integrations not ready, buffering message.');
                     pendingMessage.current = event.data.data;
                     return;
                 }
+                console.log('[PostQuee App] Processing message immediately...');
                 processMessage(event.data.data);
             }
         };
+
+        console.log('[PostQuee App] WPPostMessageListener mounted');
+        console.log('[PostQuee App] Integrations available:', !!integrations);
+        console.log('[PostQuee App] Integrations count:', integrations?.length);
 
         window.addEventListener('message', handleMessage);
         return () => window.removeEventListener('message', handleMessage);
