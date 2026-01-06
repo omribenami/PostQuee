@@ -41,8 +41,8 @@ export const WPPostMessageListener = () => {
             },
             children: (
                 <AddEditModal
-                    allIntegrations={integrations?.map((p: any) => ({ ...p })) || []}
-                    integrations={integrations || []}
+                    allIntegrations={Array.isArray(integrations) ? integrations.map((p: any) => ({ ...p })) : []}
+                    integrations={Array.isArray(integrations) ? integrations : []}
                     date={date}
                     reopenModal={() => { }}
                     mutate={() => { }}
