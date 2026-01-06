@@ -64,14 +64,14 @@ export const OrganizationSelector: FC<{ asOpenSelect?: boolean }> = ({
               </svg>
             </div>
           )}
-          {data?.length > 1 && (
+          {Array.isArray(data) && data.length > 1 && (
             <div
               className={clsx(
                 'hidden py-[12px] px-[12px] group-hover:flex absolute top-[100%] end-0 bg-third border-tableBorder border gap-[12px] cursor-pointer flex-col',
                 asOpenSelect ? '!flex !relative max-w-[500px] mx-auto mb-[10px]' : '',
               )}
             >
-              {data?.map((org: { name: string; id: string }) => (
+              {data.map((org: { name: string; id: string }) => (
                 <div key={org.id} onClick={changeOrg(org)}>
                   {org.name}
                 </div>
