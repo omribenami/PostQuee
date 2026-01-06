@@ -21,10 +21,10 @@ export const OrganizationSelector: FC<{ asOpenSelect?: boolean }> = ({
     revalidateOnReconnect: false,
   });
   const current = useMemo(() => {
-    return data?.find((d: any) => d.id === user?.orgId);
+    return Array.isArray(data) ? data.find((d: any) => d.id === user?.orgId) : undefined;
   }, [data]);
   const withoutCurrent = useMemo(() => {
-    return data?.filter((d: any) => d.id !== user?.orgId);
+    return Array.isArray(data) ? data.filter((d: any) => d.id !== user?.orgId) : [];
   }, [current, data]);
   const changeOrg = useCallback(
     (org: { name: string; id: string }) => async () => {
