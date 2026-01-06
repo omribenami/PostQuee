@@ -25,38 +25,49 @@ export const WPPostMessageListener = () => {
 
     // Helper to process the message and open modal
     const processMessage = (data: any) => {
-        const { post_title, post_url, featured_image, excerpt } = data;
-        const content = `${post_title}\n\n${excerpt}\n\n${post_url}`;
-        const media = featured_image ? [{ id: 'wp-import', path: featured_image }] : [];
-        const date = dayjs();
+        try {
+            console.log('[PostQuee App] processMessage called with data:', data);
+            const { post_title, post_url, featured_image, excerpt } = data;
+            const content = `${post_title}\n\n${excerpt}\n\n${post_url}`;
+            const media = featured_image ? [{ id: 'wp-import', path: featured_image }] : [];
+            const date = dayjs();
 
-        modal.openModal({
-            id: 'add-edit-modal-wp',
-            closeOnClickOutside: false,
-            removeLayout: true,
-            closeOnEscape: false,
-            withCloseButton: false,
-            askClose: true,
-            fullScreen: true,
-            classNames: {
-                modal: 'w-[100%] max-w-[1400px] text-textColor',
-            },
-            children: (
-                <AddEditModal
-                    allIntegrations={integrations.map((p: any) => ({ ...p }))}
-                    integrations={integrations}
-                    date={date}
-                    reopenModal={() => { }}
-                    mutate={() => { }}
-                    onlyValues={[{
-                        content: content,
-                        image: media
-                    }]}
-                />
-            ),
-            size: '80%',
-            title: ``,
-        });
+            console.log('[PostQuee App] Opening modal with content:', content);
+            console.log('[PostQuee App] Media:', media);
+            console.log('[PostQuee App] Modal object:', modal);
+
+            modal.openModal({
+                id: 'add-edit-modal-wp',
+                closeOnClickOutside: false,
+                removeLayout: true,
+                closeOnEscape: false,
+                withCloseButton: false,
+                askClose: true,
+                fullScreen: true,
+                classNames: {
+                    modal: 'w-[100%] max-w-[1400px] text-textColor',
+                },
+                children: (
+                    <AddEditModal
+                        allIntegrations={integrations.map((p: any) => ({ ...p }))}
+                        integrations={integrations}
+                        date={date}
+                        reopenModal={() => { }}
+                        mutate={() => { }}
+                        onlyValues={[{
+                            content: content,
+                            image: media
+                        }]}
+                    />
+                ),
+                size: '80%',
+                title: ``,
+            });
+
+            console.log('[PostQuee App] Modal.openModal called successfully');
+        } catch (error) {
+            console.error('[PostQuee App] Error in processMessage:', error);
+        }
     };
 
     // Effect to process pending message once integrations are loaded
