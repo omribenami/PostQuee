@@ -71,16 +71,20 @@ export const WPPostMessageListener = () => {
 
             // Check localStorage (persisted from Login page)
             if (typeof localStorage !== 'undefined') {
-                const storedPost = localStorage.getItem('pending-wp-post');
-                if (storedPost) {
-                    console.log('PostQuee: Found pending post from Login, processing.');
-                    try {
-                        const data = JSON.parse(storedPost);
-                        processMessage(data);
-                        localStorage.removeItem('pending-wp-post');
-                    } catch (e) {
-                        console.error('Failed to parse pending post', e);
+                try {
+                    const storedPost = localStorage.getItem('pending-wp-post');
+                    if (storedPost) {
+                        console.log('PostQuee: Found pending post from Login, processing.');
+                        try {
+                            const data = JSON.parse(storedPost);
+                            processMessage(data);
+                            localStorage.removeItem('pending-wp-post');
+                        } catch (e) {
+                            console.error('Failed to parse pending post', e);
+                        }
                     }
+                } catch (e) {
+                    console.error('PostQuee: LocalStorage access failed (Corruption detected)', e);
                 }
             }
         }
