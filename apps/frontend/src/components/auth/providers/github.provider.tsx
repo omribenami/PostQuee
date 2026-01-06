@@ -8,9 +8,19 @@ export const GithubProvider = () => {
     const link = await (await fetch('/auth/oauth/GITHUB')).text();
     if (typeof window !== 'undefined' && window.self !== window.top) {
       const popup = window.open(link, 'github-login', 'width=500,height=600');
+
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data?.type === 'login-success') {
+          window.removeEventListener('message', handleMessage);
+          window.location.reload();
+        }
+      };
+      window.addEventListener('message', handleMessage);
+
       const timer = setInterval(() => {
         if (popup?.closed) {
           clearInterval(timer);
+          window.removeEventListener('message', handleMessage);
           window.location.reload();
         }
       }, 1000);

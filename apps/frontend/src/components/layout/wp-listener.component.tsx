@@ -59,10 +59,28 @@ export const WPPostMessageListener = () => {
 
     // Effect to process pending message once integrations are loaded
     useEffect(() => {
-        if (integrations && integrations.length > 0 && pendingMessage.current) {
-            console.log('PostQuee: Integrations loaded, processing pending message.');
-            processMessage(pendingMessage.current);
-            pendingMessage.current = null;
+        if (integrations && integrations.length > 0) {
+            // Check memory buffer
+            if (pendingMessage.current) {
+                console.log('PostQuee: Integrations loaded, processing pending message.');
+                processMessage(pendingMessage.current);
+                pendingMessage.current = null;
+            }
+
+            // Check localStorage (persisted from Login page)
+            if (typeof localStorage !== 'undefined') {
+                const storedPost = localStorage.getItem('pending-wp-post');
+                if (storedPost) {
+                    console.log('PostQuee: Found pending post from Login, processing.');
+                    try {
+                        const data = JSON.parse(storedPost);
+                        processMessage(data);
+                        localStorage.removeItem('pending-wp-post');
+                    } catch (e) {
+                        console.error('Failed to parse pending post', e);
+                    }
+                }
+            }
         }
     }, [integrations, modal]);
 

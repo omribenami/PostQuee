@@ -21,10 +21,20 @@ export const OauthProvider = () => {
 
       if (typeof window !== 'undefined' && window.self !== window.top) {
         const popup = window.open(link, 'generic-oauth-login', 'width=500,height=600');
+
+        const handleMessage = (event: MessageEvent) => {
+          if (event.data?.type === 'login-success') {
+            window.removeEventListener('message', handleMessage);
+            window.location.reload();
+          }
+        };
+        window.addEventListener('message', handleMessage);
+
         const timer = setInterval(() => {
           if (popup?.closed) {
             clearInterval(timer);
             // Reload main window to pick up the new session
+            window.removeEventListener('message', handleMessage);
             window.location.reload();
           }
         }, 1000);

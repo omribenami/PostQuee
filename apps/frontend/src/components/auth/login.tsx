@@ -5,7 +5,7 @@ import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import Link from 'next/link';
 import { Button } from '@gitroom/react/form/button';
 import { Input } from '@gitroom/react/form/input';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { LoginUserDto } from '@gitroom/nestjs-libraries/dtos/auth/login.user.dto';
 import { GithubProvider } from '@gitroom/frontend/components/auth/providers/github.provider';
@@ -37,6 +37,23 @@ export function Login() {
     },
   });
   const fetchData = useFetch();
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (
+        event.data?.type === 'create-post-from-wp' &&
+        event.data?.data
+      ) {
+        console.log('PostQuee: Received WP message while logged out, storing for after login.');
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('pending-wp-post', JSON.stringify(event.data.data));
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
     const login = await fetchData('/auth/login', {

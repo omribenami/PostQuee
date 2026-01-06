@@ -1,17 +1,18 @@
 #!/bin/bash
 
 ##############################################################################
-# Postiz Container Build Script
+# Postiz Container Build & Deploy Script
 #
 # This script builds the Postiz Docker container with various options.
 # Usage: ./build.sh [OPTIONS]
 #
 # Options:
-#   -t, --tag TAG        Tag for the image (default: postiz:latest)
+#   -t, --tag TAG        Tag for the image (default: postquee:latest)
 #   -r, --registry URL   Push to registry after build
 #   -n, --no-cache       Build without using cache
 #   -c, --clean          Clean old images before building
 #   -v, --version VER    Set NEXT_PUBLIC_VERSION build arg
+#   -d, --deploy         Deploy after build (pull git, build, restart container)
 #   -h, --help           Show this help message
 ##############################################################################
 
@@ -25,12 +26,16 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Default values
-IMAGE_TAG="postiz:latest"
+IMAGE_TAG="postiz-app:latest"
 REGISTRY=""
 NO_CACHE=""
 CLEAN=false
 VERSION=""
 DOCKERFILE="Dockerfile.dev"
+DEPLOY=false
+CONTAINER_NAME="postiz-app"
+NETWORK="postiz-network"
+PORT_MAPPING="5001:5000"  # 5000 is taken by Frigate, using 5001
 
 # Helper functions
 print_info() {
@@ -51,23 +56,25 @@ print_warning() {
 
 show_help() {
     cat << EOF
-Postiz Container Build Script
+Postiz Container Build & Deploy Script
 
 Usage: ./build.sh [OPTIONS]
 
 Options:
-  -t, --tag TAG        Tag for the image (default: postiz:latest)
+  -t, --tag TAG        Tag for the image (default: postquee:latest)
   -r, --registry URL   Push to registry after build (e.g., ghcr.io/username)
   -n, --no-cache       Build without using cache
   -c, --clean          Clean old images before building
   -v, --version VER    Set NEXT_PUBLIC_VERSION build arg
+  -d, --deploy         Deploy after build (pull git, build, restart container)
   -h, --help           Show this help message
 
 Examples:
   ./build.sh
-  ./build.sh -t postiz:v1.0.0 -v 1.0.0
-  ./build.sh -t myregistry.io/postiz:latest -r myregistry.io -c
-  ./build.sh --clean --no-cache
+  ./build.sh -d                                                    # Pull, build, and deploy
+  ./build.sh -t postquee:v1.0.0 -v 1.0.0
+  ./build.sh -t myregistry.io/postquee:latest -r myregistry.io -c
+  ./build.sh --clean --no-cache --deploy
 
 EOF
 }
@@ -95,6 +102,10 @@ while [[ $# -gt 0 ]]; do
             VERSION="$2"
             shift 2
             ;;
+        -d|--deploy)
+            DEPLOY=true
+            shift
+            ;;
         -h|--help)
             show_help
             exit 0
@@ -110,6 +121,18 @@ done
 # Start build process
 print_info "Starting Postiz container build..."
 echo ""
+
+# Pull latest changes from git if deploying
+if [ "$DEPLOY" = true ]; then
+    print_info "Pulling latest changes from git..."
+    if git pull origin main; then
+        print_success "Git pull completed"
+    else
+        print_error "Git pull failed"
+        exit 1
+    fi
+    echo ""
+fi
 
 # Check if Docker is available
 if ! command -v docker &> /dev/null; then
@@ -197,10 +220,57 @@ echo ""
 print_info "Image details:"
 docker images "$IMAGE_TAG" --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.Size}}\t{{.CreatedSince}}" | head -n 2
 
-echo ""
-print_info "To run the container, use:"
-echo "  docker run -d -p 3000:3000 -p 4200:4200 --name postiz $IMAGE_TAG"
-echo ""
-print_info "Or use the existing create script:"
-echo "  ./var/docker/docker-create.sh"
+# Deploy if requested
+if [ "$DEPLOY" = true ]; then
+    echo ""
+    print_info "Starting deployment..."
+    echo ""
+
+    # Stop and remove existing container
+    print_info "Stopping existing container..."
+    docker stop "$CONTAINER_NAME" 2>/dev/null || true
+    docker rm "$CONTAINER_NAME" 2>/dev/null || true
+    print_success "Old container removed"
+    echo ""
+
+    # Create and start new container
+    # Note: .env file is already baked into the image during build
+    print_info "Starting new container..."
+    docker create \
+        --name "$CONTAINER_NAME" \
+        --network "$NETWORK" \
+        -p "$PORT_MAPPING" \
+        "$IMAGE_TAG"
+
+    docker start "$CONTAINER_NAME"
+    print_success "Container started"
+    echo ""
+
+    # Wait for services to be ready
+    print_info "Waiting for services to start..."
+    sleep 10
+
+    # Check status
+    print_info "Checking container status..."
+    if docker exec "$CONTAINER_NAME" pm2 list > /dev/null 2>&1; then
+        print_success "All services are running!"
+        echo ""
+        docker exec "$CONTAINER_NAME" pm2 list
+    else
+        print_warning "Container started but PM2 not responding yet. Check logs with: docker logs $CONTAINER_NAME"
+    fi
+
+    echo ""
+    print_success "Deployment completed!"
+    print_info "Frontend: http://localhost:${PORT_MAPPING%%:*}"
+    print_info "View logs: docker logs -f $CONTAINER_NAME"
+else
+    echo ""
+    print_info "To run the container, use:"
+    echo "  docker run -d -p 3000:3000 -p 4200:4200 --name $CONTAINER_NAME $IMAGE_TAG"
+    echo ""
+    print_info "Or run with deployment:"
+    echo "  ./build.sh -d"
+fi
+
 echo ""

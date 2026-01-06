@@ -10,9 +10,19 @@ export const GoogleProvider = () => {
     const link = await (await fetch('/auth/oauth/GOOGLE')).text();
     if (typeof window !== 'undefined' && window.self !== window.top) {
       const popup = window.open(link, 'google-login', 'width=500,height=600');
+
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data?.type === 'login-success') {
+          window.removeEventListener('message', handleMessage);
+          window.location.reload();
+        }
+      };
+      window.addEventListener('message', handleMessage);
+
       const timer = setInterval(() => {
         if (popup?.closed) {
           clearInterval(timer);
+          window.removeEventListener('message', handleMessage);
           window.location.reload();
         }
       }, 1000);
