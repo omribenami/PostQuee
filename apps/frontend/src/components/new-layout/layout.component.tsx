@@ -65,10 +65,7 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
     refreshWhenHidden: false,
   });
 
-  if (!user || !user.id) return null;
-
   // Auto-close popup if this is a successful login flow initiated by the iframe
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   React.useEffect(() => {
     if (typeof window !== 'undefined' && window.opener && ['google-login', 'github-login', 'generic-oauth-login'].includes(window.name)) {
       console.log('PostQuee: Login successful in popup, notifying opener.');
@@ -76,6 +73,8 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
       window.close();
     }
   }, []);
+
+  if (!user || !user.id) return null;
 
   return (
     <ContextWrapper user={user}>
