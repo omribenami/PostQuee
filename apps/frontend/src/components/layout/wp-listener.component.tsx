@@ -98,19 +98,15 @@ export const WPPostMessageListener = () => {
             if (event.data?.type === 'create-post-from-wp' && event.data?.data) {
                 console.log('[PostQuee App] WordPress message detected!');
                 console.log('[PostQuee App] Message data:', event.data.data);
-                console.log('[PostQuee App] Integrations data loaded:', integrationsData !== undefined);
+                console.log('[PostQuee App] Integrations loaded:', !!integrations);
                 console.log('[PostQuee App] Integrations length:', integrations?.length);
 
-                // Only buffer if the API call hasn't completed yet
-                if (integrationsData === undefined) {
-                    console.log('[PostQuee App] Integrations API still loading, buffering message.');
+                if (!integrations || integrations.length === 0) {
+                    console.log('[PostQuee App] Integrations not ready, buffering message.');
                     pendingMessage.current = event.data.data;
                     return;
                 }
-
-                // If integrations loaded but empty, still open the modal
-                // The user can connect integrations from within the modal
-                console.log('[PostQuee App] Processing message (integrations: ' + integrations.length + ')');
+                console.log('[PostQuee App] Processing message immediately...');
                 processMessage(event.data.data);
             }
         };
@@ -121,9 +117,14 @@ export const WPPostMessageListener = () => {
 
         window.addEventListener('message', handleMessage);
         return () => window.removeEventListener('message', handleMessage);
-    }, [modal, integrations, integrationsData]);
+    }, [modal, integrations]);
 
-    // Handle resize logic to send back to parent
+    // Also handle resize logic here to send back to parent?
+    // User asked: "PostQuee frontend (Next.js) to listen for this specific postMessage"
+    // User also asked: "Smart Resizing: Use the window.postMessage API... Add a script to the plugin... Add a listener"
+    // Wait, the RESIZE listener is in the PLUGIN. The APP needs to SEND the resize event.
+    // I should add a resize observer here to send height to parent.
+
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
