@@ -59,7 +59,7 @@ export const WPPostMessageListener = () => {
 
     // Effect to process pending message once integrations are loaded
     useEffect(() => {
-        if (integrations && integrations.length > 0) {
+        if (integrations) {
             // Check memory buffer
             if (pendingMessage.current) {
                 console.log('PostQuee: Integrations loaded, processing pending message.');
@@ -87,7 +87,7 @@ export const WPPostMessageListener = () => {
     useEffect(() => {
         const handleMessage = async (event: MessageEvent) => {
             if (event.data?.type === 'create-post-from-wp' && event.data?.data) {
-                if (!integrations || integrations.length === 0) {
+                if (!integrations) {
                     console.log('PostQuee: Integrations not ready, buffering message.');
                     pendingMessage.current = event.data.data;
                     return;
