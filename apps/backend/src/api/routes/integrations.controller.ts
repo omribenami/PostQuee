@@ -420,38 +420,42 @@ export class IntegrationsController {
       username,
       additionalSettings,
       // eslint-disable-next-line no-async-promise-executor
-    } = await new Promise<AuthTokenDetails>(async (res) => {
-      const auth = await integrationProvider.authenticate(
-        {
-          code: body.code,
-          codeVerifier: getCodeVerifier,
-          refresh: body.refresh,
-        },
-        details ? JSON.parse(details) : undefined
-      );
-
-      if (typeof auth === 'string') {
-        return res({
-          error: auth,
-          accessToken: '',
-          id: '',
-          name: '',
-          picture: '',
-          username: '',
-          additionalSettings: [],
-        });
-      }
-
-      if (refresh && integrationProvider.reConnect) {
-        const newAuth = await integrationProvider.reConnect(
-          auth.id,
-          refresh,
-          auth.accessToken
+    } = await new Promise<AuthTokenDetails>(async (res, rej) => {
+      try {
+        const auth = await integrationProvider.authenticate(
+          {
+            code: body.code,
+            codeVerifier: getCodeVerifier,
+            refresh: body.refresh,
+          },
+          details ? JSON.parse(details) : undefined
         );
-        return res({ ...newAuth, refreshToken: body.refresh });
-      }
 
-      return res(auth);
+        if (typeof auth === 'string') {
+          return res({
+            error: auth,
+            accessToken: '',
+            id: '',
+            name: '',
+            picture: '',
+            username: '',
+            additionalSettings: [],
+          });
+        }
+
+        if (refresh && integrationProvider.reConnect) {
+          const newAuth = await integrationProvider.reConnect(
+            auth.id,
+            refresh,
+            auth.accessToken
+          );
+          return res({ ...newAuth, refreshToken: body.refresh });
+        }
+
+        return res(auth);
+      } catch (err) {
+        rej(err);
+      }
     });
 
     if (error) {
