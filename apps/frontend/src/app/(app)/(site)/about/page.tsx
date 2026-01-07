@@ -272,7 +272,7 @@ function TermsOfService() {
 
       <h3>10.2 WordPress Plugin (GPL-2.0+)</h3>
       <p>The PostQuee WordPress Plugin is licensed under GPL-2.0+. Source code is available at:</p>
-      <p><a href="https://github.com/omribenami/WP_PostQuee" target="_blank" rel="noopener">https://github.com/omribenami/WP_PostQuee</a></p>
+      <p><a href="https://github.com/omribenami/postquee-connector" target="_blank" rel="noopener">https://github.com/omribenami/postquee-connector</a></p>
 
       <h2>11. Intellectual Property</h2>
       <p>You retain all rights to your content. By using the Service, you grant us a limited license to store and transmit your content for providing the Service.</p>
