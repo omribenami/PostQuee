@@ -19,7 +19,7 @@ export default async function AuthLayout({
 
   return (
     <MantineWrapper>
-      <div className="bg-[#0E0E0E] min-h-screen w-full flex items-center justify-center relative overflow-hidden text-white font-sans">
+      <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden text-white font-sans" style={{ background: 'linear-gradient(180deg, #1A2B3C 0%, #111 100%)' }}>
         <ReturnUrlComponent />
 
         {/* Language Selector */}
@@ -34,7 +34,7 @@ export default async function AuthLayout({
         <div className="w-full max-w-[1600px] h-full lg:h-[90vh] flex flex-col lg:flex-row gap-4 p-4 lg:p-8 z-10">
 
           {/* Left Side: Visuals (Hidden on small screens) */}
-          <div className="hidden lg:flex flex-1 bg-[#1A1919] border border-white/5 rounded-[24px] p-12 flex-col justify-between relative overflow-hidden backdrop-blur-sm shadow-2xl">
+          <div className="hidden lg:flex flex-1 bg-[#2D3E50] border border-white/5 rounded-[24px] p-12 flex-col justify-between relative overflow-hidden backdrop-blur-sm shadow-2xl">
             <div className="z-20 relative">
               <div className="mb-12">
                 <LogoTextComponent />
@@ -105,7 +105,7 @@ export default async function AuthLayout({
 
           {/* Right Side: Auth Form */}
           <div className="flex-1 flex flex-col justify-center items-center">
-            <div className="w-full max-w-[500px] bg-[#1A1919] lg:bg-transparent border border-white/5 lg:border-none rounded-[24px] p-8 lg:p-0 shadow-xl lg:shadow-none">
+            <div className="w-full max-w-[500px] bg-[#2D3E50] lg:bg-transparent border border-white/5 lg:border-none rounded-[24px] p-8 lg:p-0 shadow-xl lg:shadow-none">
               <div className="lg:hidden mb-8 flex justify-center">
                 <LogoTextComponent />
               </div>
