@@ -221,3 +221,4 @@ docker-compose.local.yml
 *.exe
 apps/frontend/public/Antigravity*.exe
 postqueeV3.tar
+node-compile-cache/
