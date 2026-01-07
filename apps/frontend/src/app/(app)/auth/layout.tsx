@@ -39,48 +39,62 @@ export default async function AuthLayout({
               <div className="mb-12">
                 <LogoTextComponent />
               </div>
+
+              {/* Badge */}
+              <div className="inline-block bg-[#FF8C00]/10 border border-[#FF8C00]/30 rounded-full px-5 py-2 mb-6">
+                <span className="text-[#FF8C00] text-sm font-semibold">⚡ The Only Social Scheduler Built INTO WordPress</span>
+              </div>
+
               <h1 className="text-5xl xl:text-6xl font-bold leading-tight tracking-tight">
-                {t('publish_on_wordpress', 'Publish on WordPress.')} <br />
-                <span className="text-[#FF8C00]">{t('trend_on_social', 'Trend on Social.')}</span>
+                {t('schedule_social_without_leaving', 'Schedule Social Posts')} <br />
+                <span className="text-[#FF8C00]">{t('without_leaving_wordpress', 'Without Leaving')} WordPress</span>
               </h1>
-              <p className="mt-8 text-gray-300 text-lg max-w-lg leading-relaxed">
-                {t('ultimate_scheduler_description', 'The ultimate auto-scheduler for Creators and Agencies. Automatically format, optimize, and schedule your posts for LinkedIn, Facebook, Instagram, and X.')}
+              <p className="mt-6 text-gray-300 text-lg max-w-lg leading-relaxed">
+                {t('native_wordpress_description', 'Native WordPress plugin. Publish to LinkedIn, Facebook, Instagram, and X directly from your Gutenberg editor.')}
               </p>
 
-              <div className="mt-12 grid grid-cols-1 gap-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-[#FF8C00]/10 text-[#FF8C00]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">{t('seamless_integration', 'Seamless Integration')}</h3>
-                    <p className="text-gray-400 text-sm mt-1">{t('native_wordpress_plugin', 'Native WordPress plugin that feels like part of your dashboard.')}</p>
-                  </div>
+              {/* Trust Badges */}
+              <div className="mt-10 flex flex-wrap gap-4 text-sm text-gray-400">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500 text-lg">✓</span>
+                  <span>{t('secure_oauth', 'Secure OAuth')}</span>
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-[#FF8C00]/10 text-[#FF8C00]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">{t('smart_ai_formatting', 'Smart AI Formatting')}</h3>
-                    <p className="text-gray-400 text-sm mt-1">{t('auto_generate_captions', 'Auto-generate captions and hashtags tailored for each platform.')}</p>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500 text-lg">✓</span>
+                  <span>{t('no_password_required', 'No Password Required')}</span>
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-[#FF8C00]/10 text-[#FF8C00]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">{t('unified_analytics', 'Unified Analytics')}</h3>
-                    <p className="text-gray-400 text-sm mt-1">{t('track_engagement', 'Track engagement, likes, and shares across all connected networks.')}</p>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500 text-lg">✓</span>
+                  <span>{t('gdpr_compliant', 'GDPR Compliant')}</span>
                 </div>
+              </div>
+
+              {/* Learn More Link */}
+              <div className="mt-10">
+                <a
+                  href="https://postquee.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-[#FF8C00] hover:text-[#FF8C00]/80 transition-colors font-medium"
+                >
+                  <span>{t('learn_more', 'Learn more about PostQuee')}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
               </div>
             </div>
 
-            <div className="z-10 relative mt-auto w-full pt-8">
-              {/* Optional: We can keep the testimonial component or remove it if not needed. */}
-              {/* <TestimonialComponent />  */}
+            <div className="z-10 relative mt-auto pt-8">
+              {/* Footer Trust Signals */}
+              <div className="flex items-center gap-8 text-xs text-gray-500">
+                <div className="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  <span>{t('bank_level_security', 'Bank-Level Security')}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path></svg>
+                  <span>{t('open_source', 'Open Source (AGPL-3.0)')}</span>
+                </div>
+              </div>
             </div>
 
             {/* Decorative Grid */}
