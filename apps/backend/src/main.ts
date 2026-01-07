@@ -3,6 +3,8 @@ initializeSentry('backend', true);
 
 import { loadSwagger } from '@gitroom/helpers/swagger/load.swagger';
 import { json } from 'express';
+import express from 'express';
+import { join } from 'path';
 
 process.env.TZ = 'UTC';
 
@@ -48,6 +50,11 @@ async function start() {
   app.use('/copilot/*', (req: any, res: any, next: any) => {
     json({ limit: '50mb' })(req, res, next);
   });
+
+  // Serve static files from uploads directory
+  const uploadDir = process.env.UPLOAD_DIRECTORY || './uploads';
+  app.use('/uploads', express.static(uploadDir));
+  Logger.log(`Serving static files from: ${uploadDir}`);
 
   app.use(cookieParser());
   app.useGlobalFilters(new SubscriptionExceptionFilter());

@@ -27,22 +27,29 @@ export const GET = (
     };
   }
 ) => {
-  const filePath =
-    process.env.UPLOAD_DIRECTORY + '/' + context.params.path.join('/');
-  const response = createReadStream(filePath);
-  const fileStats = statSync(filePath);
-  const contentType = mime.getType(filePath) || 'application/octet-stream';
-  const iterator = nodeStreamToIterator(response);
-  const webStream = iteratorToStream(iterator);
-  return new Response(webStream, {
-    headers: {
-      'Content-Type': contentType,
-      // Set the appropriate content-type header
-      'Content-Length': fileStats.size.toString(),
-      // Set the content-length header
-      'Last-Modified': fileStats.mtime.toUTCString(),
-      // Set the last-modified header
-      'Cache-Control': 'public, max-age=31536000, immutable', // Example cache-control header
-    },
-  });
+  try {
+    // Default to ./uploads if UPLOAD_DIRECTORY is not set
+    const uploadDir = process.env.UPLOAD_DIRECTORY || './uploads';
+    const filePath = uploadDir + '/' + context.params.path.join('/');
+
+    const response = createReadStream(filePath);
+    const fileStats = statSync(filePath);
+    const contentType = mime.getType(filePath) || 'application/octet-stream';
+    const iterator = nodeStreamToIterator(response);
+    const webStream = iteratorToStream(iterator);
+    return new Response(webStream, {
+      headers: {
+        'Content-Type': contentType,
+        // Set the appropriate content-type header
+        'Content-Length': fileStats.size.toString(),
+        // Set the content-length header
+        'Last-Modified': fileStats.mtime.toUTCString(),
+        // Set the last-modified header
+        'Cache-Control': 'public, max-age=31536000, immutable', // Example cache-control header
+      },
+    });
+  } catch (error) {
+    console.error('Error serving upload file:', error);
+    return new Response('File not found', { status: 404 });
+  }
 };

@@ -14,11 +14,17 @@ export const RenderAnalytics: FC<{
   const fetch = useFetch();
   const load = useCallback(async () => {
     setLoading(true);
-    const load = (
-      await fetch(`/analytics/${integration.id}?date=${date}`)
-    ).json();
-    setLoading(false);
-    return load;
+    try {
+      const response = await fetch(`/analytics/${integration.id}?date=${date}`);
+      const result = await response.json();
+      setLoading(false);
+      // Ensure we always return an array
+      return Array.isArray(result) ? result : [];
+    } catch (error) {
+      console.error('Failed to load analytics:', error);
+      setLoading(false);
+      return [];
+    }
   }, [integration, date]);
   const { data } = useSWR(`/analytics-${integration?.id}-${date}`, load, {
     refreshInterval: 0,
@@ -52,7 +58,10 @@ export const RenderAnalytics: FC<{
   const t = useT();
 
   const total = useMemo(() => {
-    return data?.map((p: any) => {
+    if (!data || !Array.isArray(data)) {
+      return [];
+    }
+    return data.map((p: any) => {
       const value =
         (p?.data.reduce((acc: number, curr: any) => acc + curr.total, 0) || 0) /
         (p.average ? p.data.length : 1);
@@ -71,7 +80,7 @@ export const RenderAnalytics: FC<{
   }
   return (
     <div className="grid grid-cols-3 gap-[20px]">
-      {data?.length === 0 && (
+      {Array.isArray(data) && data.length === 0 && (
         <div>
           {t(
             'this_channel_needs_to_be_refreshed',
@@ -85,7 +94,7 @@ export const RenderAnalytics: FC<{
           </div>
         </div>
       )}
-      {data?.map((p: any, index: number) => (
+      {Array.isArray(data) && data.map((p: any, index: number) => (
         <div key={`pl-${index}`} className="flex">
           <div className="flex-1 bg-newTableHeader rounded-[8px] py-[10px] px-[16px] gap-[10px] flex flex-col">
             <div className="flex items-center gap-[14px]">

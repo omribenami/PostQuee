@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Postiz is an open-source AI social media scheduling tool that supports multiple platforms (Instagram, YouTube, LinkedIn, X/Twitter, Facebook, TikTok, Reddit, Discord, Slack, Mastodon, Bluesky, and more). It provides scheduling, analytics, marketplace features, and AI-powered content generation.
+PostQuee is an open-source AI social media scheduling tool (built on Postiz) that supports multiple platforms (Instagram, YouTube, LinkedIn, X/Twitter, Facebook, TikTok, Reddit, Discord, Slack, Mastodon, Bluesky, and more). It provides scheduling, analytics, marketplace features, and AI-powered content generation.
 
 **Tech Stack:**
 - Monorepo architecture managed by pnpm workspaces
@@ -109,9 +109,13 @@ pnpm --filter ./apps/frontend run build
 
 ### Module Organization (NestJS)
 - Backend uses modular architecture with guards, pipes, and filters
-- `PoliciesGuard`: CASL-based authorization (apps/backend/services/auth/permissions/permissions.guard.ts)
+- `PoliciesGuard`: CASL-based authorization (apps/backend/src/services/auth/permissions/permissions.guard.ts)
 - `ThrottlerBehindProxyGuard`: Rate limiting with proxy support
 - Global exception filters: `SubscriptionExceptionFilter`, `HttpExceptionFilter`
+- Main entry point: `apps/backend/src/main.ts` (port 3000)
+- API routes located in: `apps/backend/src/api/routes/`
+  - Key controllers: auth, posts, integrations, media, analytics, billing, marketplace, webhooks, settings, users
+- Public API located in: `apps/backend/src/public-api/`
 
 ### Shared Libraries Pattern
 The monorepo uses shared libraries to avoid code duplication:
@@ -125,8 +129,8 @@ The monorepo uses shared libraries to avoid code duplication:
 - `redis/`: Redis client configuration
 - `upload/`: File upload handling
 - `videos/`: Video processing
-- `chat/`: Chat/MCP (Model Context Protocol) integration
-- `agent/`: AI agent functionality
+- `chat/`: Chat/MCP (Model Context Protocol) integration (started via `startMcp()` in backend main.ts)
+- `agent/`: AI agent functionality (AgentModule)
 - `3rdparties/`: Third-party service integrations (Make.com, N8N)
 - `newsletter/`: Newsletter integrations
 - `short-linking/`: URL shortening services (Dub, Short.io, Kutt, LinkDrip)
@@ -142,14 +146,15 @@ The monorepo uses shared libraries to avoid code duplication:
 - Swagger configuration
 
 ### Frontend Architecture (Next.js)
-- Uses App Router (Next.js 14)
+- Uses App Router (Next.js 14) in `apps/frontend/src/app/`
 - Route structure:
   - `(app)/`: Main application routes
-  - `(app)/auth/`: Authentication pages (login, register, activate, forgot password)
-  - `(app)/(site)/`: Protected app pages (analytics, launches, media, settings, billing, agents, plugs, third-party)
+  - `(app)/auth/`: Authentication pages (login, register, activate, forgot-password)
+  - `(app)/(site)/`: Protected app pages (about, analytics, launches, media, settings, billing, agents, plugs, integrations, third-party)
   - `(app)/(preview)/p/[id]/`: Preview page for posts
+  - `(app)/api/`: API routes for frontend operations
   - `(extension)/`: Extension-specific routes
-- Styling: Tailwind CSS + SCSS modules
+- Styling: Tailwind CSS + SCSS modules (colors.scss, global.scss)
 - State Management: Zustand, SWR for data fetching
 - UI Libraries: Mantine, custom components
 
@@ -174,9 +179,12 @@ All models use UUID primary keys and include `createdAt`/`updatedAt` timestamps.
 - Required variables: `DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`, `FRONTEND_URL`, `NEXT_PUBLIC_BACKEND_URL`, `BACKEND_INTERNAL_URL`
 - Storage: Supports both Cloudflare R2 and local file storage (controlled by `STORAGE_PROVIDER`)
 - OAuth integrations require client ID/secret for each platform
-- Payment processing: Stripe integration
+- Payment processing: Stripe integration (includes webhook signing secrets for subscriptions and connect events)
 - Email: Resend (optional, auto-activates users if not configured)
 - AI features: OpenAI API key optional
+- White-label: Set Terms/Privacy URLs via `NEXT_PUBLIC_TERMS_URL` and `NEXT_PUBLIC_PRIVACY_URL`
+- Generic OAuth: Supports custom OAuth providers (e.g., Authentik) via `POSTIZ_GENERIC_OAUTH` and related variables
+- Registration: Can disable via `DISABLE_REGISTRATION` flag
 - **IMPORTANT**: Always update `.env.example` when adding new environment variables
 
 ### Logging & Error Tracking
@@ -212,19 +220,28 @@ All models use UUID primary keys and include `createdAt`/`updatedAt` timestamps.
 - Swagger/OpenAPI documentation for API endpoints
 
 ### Import Aliases
-The monorepo uses TypeScript path aliases:
+The monorepo uses TypeScript path aliases (defined in `tsconfig.base.json`):
 - `@gitroom/backend/*` → `apps/backend/src/*`
+- `@gitroom/frontend/*` → `apps/frontend/src/*`
+- `@gitroom/workers/*` → `apps/workers/src/*`
+- `@gitroom/cron/*` → `apps/cron/src/*`
+- `@gitroom/extension/*` → `apps/extension/src/*`
 - `@gitroom/nestjs-libraries/*` → `libraries/nestjs-libraries/src/*`
 - `@gitroom/helpers/*` → `libraries/helpers/src/*`
-- `@gitroom/react-shared-libraries/*` → `libraries/react-shared-libraries/src/*`
+- `@gitroom/react/*` → `libraries/react-shared-libraries/src/*`
+- `@gitroom/plugins/*` → `libraries/plugins/src/*`
 
 ### Integration Points
-- **Social Media APIs**: OAuth flows for 14+ platforms via `nestjs-libraries/integrations/`
+- **Social Media APIs**: OAuth flows for 20+ platforms via `nestjs-libraries/src/integrations/social/`
+  - Supported platforms: X (Twitter), LinkedIn, Facebook, Instagram, YouTube, TikTok, Reddit, Discord, Slack, Mastodon, Bluesky, Pinterest, Threads, Dribbble, Dev.to, Hashnode, Medium, Lemmy, Farcaster, Nostr, WordPress, VK, Google My Business, Telegram
+  - Each platform has a provider file (e.g., `x.provider.ts`, `linkedin.provider.ts`)
 - **Public API**: RESTful API with rate limiting (default 30 req/hour, configurable via `API_LIMIT`)
 - **SDK**: NodeJS SDK published to npm (`@postiz/node`)
 - **Automation**: N8N custom node, Make.com integration
 - **Webhooks**: Event-driven integrations for third parties
 - **Payment**: Stripe for subscriptions and marketplace (fee: 5% default via `FEE_AMOUNT`)
+- **URL Shortening**: Integrations with Dub, Short.io, Kutt, LinkDrip (in `nestjs-libraries/src/short-linking/`)
+- **Newsletter**: Integrations with Beehiiv, Listmonk (in `nestjs-libraries/src/newsletter/`)
 
 ## Common Workflows
 

@@ -386,6 +386,9 @@ export class IntegrationService {
         if (e instanceof RefreshToken) {
           return this.checkAnalytics(org, integration, date, true);
         }
+        // Log the error and return empty array instead of throwing
+        console.error(`Analytics error for integration ${integration}:`, e);
+        return [];
       }
     }
 
