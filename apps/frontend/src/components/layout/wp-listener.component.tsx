@@ -28,12 +28,25 @@ export const WPPostMessageListener = () => {
     });
 
     const pendingMessage = useRef<any>(null);
+    // Track processed messages to prevent duplicates from retry attempts
+    const lastProcessedUrl = useRef<string | null>(null);
 
     // Helper to process the message and open modal
     const processMessage = (data: any) => {
         try {
             console.log('[PostQuee App] processMessage called with data:', data);
             const { post_title, post_url, featured_image, excerpt } = data;
+
+            // Check if we already processed this exact post URL
+            if (lastProcessedUrl.current === post_url) {
+                console.log('[PostQuee App] Duplicate message detected, ignoring (URL:', post_url, ')');
+                return;
+            }
+
+            // Mark this URL as processed
+            lastProcessedUrl.current = post_url;
+            console.log('[PostQuee App] Processing new message for URL:', post_url);
+
             const content = `${post_title}\n\n${excerpt}\n\n${post_url}`;
             const media = featured_image ? [{ id: 'wp-import', path: featured_image }] : [];
             const date = dayjs();
