@@ -198,6 +198,28 @@ export const useMenuItem = () => {
       path: '/settings',
       role: ['ADMIN', 'USER', 'SUPERADMIN'],
     },
+    {
+      name: t('about', 'About'),
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="21"
+          viewBox="0 0 20 21"
+          fill="none"
+        >
+          <path
+            d="M9.99992 14.6667V10.5M9.99992 6.33333H10.0083M18.3333 10.5C18.3333 15.1024 14.6023 18.8333 9.99992 18.8333C5.39755 18.8333 1.66659 15.1024 1.66659 10.5C1.66659 5.89763 5.39755 2.16667 9.99992 2.16667C14.6023 2.16667 18.3333 5.89763 18.3333 10.5Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+      path: '/about',
+      role: ['ADMIN', 'USER', 'SUPERADMIN'],
+    },
   ] satisfies MenuItemInterface[] as MenuItemInterface[];
 
   return {
