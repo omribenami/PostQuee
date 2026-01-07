@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useModals } from '@gitroom/frontend/components/layout/new-modal';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { AddEditModal } from '@gitroom/frontend/components/new-launch/add.edit.modal';
@@ -13,13 +13,19 @@ export const WPPostMessageListener = () => {
     const { isGeneral } = useVariables();
 
     // Fetch integrations as we need them for the modal
-    const { data: integrationsData } = useSWR('/integrations', async (url) => {
-        return (await fetch(url)).json();
-    }, {
-        revalidateOnFocus: false,
-    });
+    const load = useCallback(async (path: string) => {
+        return (await (await fetch(path)).json()).integrations;
+    }, []);
 
-    const integrations = Array.isArray(integrationsData) ? integrationsData : [];
+    const { data: integrations, isLoading } = useSWR('/integrations/list', load, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        revalidateIfStale: false,
+        revalidateOnMount: true,
+        refreshWhenHidden: false,
+        refreshWhenOffline: false,
+        fallbackData: [],
+    });
 
     const pendingMessage = useRef<any>(null);
 
@@ -109,11 +115,11 @@ export const WPPostMessageListener = () => {
             if (event.data?.type === 'create-post-from-wp' && event.data?.data) {
                 console.log('[PostQuee App] WordPress message detected!');
                 console.log('[PostQuee App] Message data:', event.data.data);
-                console.log('[PostQuee App] Integrations data loaded:', integrationsData !== undefined);
+                console.log('[PostQuee App] Integrations loading:', isLoading);
                 console.log('[PostQuee App] Integrations length:', integrations?.length);
 
                 // Only buffer if the API call hasn't completed yet
-                if (integrationsData === undefined) {
+                if (isLoading) {
                     console.log('[PostQuee App] Integrations API still loading, buffering message.');
                     pendingMessage.current = event.data.data;
                     return;
@@ -132,7 +138,7 @@ export const WPPostMessageListener = () => {
 
         window.addEventListener('message', handleMessage);
         return () => window.removeEventListener('message', handleMessage);
-    }, [modal, integrations, integrationsData]);
+    }, [modal, integrations, isLoading]);
 
     // Handle resize logic to send back to parent
     useEffect(() => {
