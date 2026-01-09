@@ -303,34 +303,59 @@ export class TiktokProvider extends SocialAbstract implements SocialProvider {
       }${process?.env?.FRONTEND_URL}/integrations/social/tiktok`,
     };
 
-    const { access_token, refresh_token, scope } = await (
-      await fetch('https://open.tiktokapis.com/v2/oauth/token/', {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        method: 'POST',
-        body: new URLSearchParams(value).toString(),
-      })
-    ).json();
-
-    console.log(this.scopes, scope);
-    this.checkScopes(this.scopes, scope);
-
-    const {
-      data: {
-        user: { avatar_url, display_name, open_id, username },
+    const tokenResponse = await fetch('https://open.tiktokapis.com/v2/oauth/token/', {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-    } = await (
-      await fetch(
-        'https://open.tiktokapis.com/v2/user/info/?fields=open_id,avatar_url,display_name,union_id,username',
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        }
-      )
-    ).json();
+      method: 'POST',
+      body: new URLSearchParams(value).toString(),
+    });
+
+    const tokenData = await tokenResponse.json();
+    console.log('TikTok token response:', JSON.stringify(tokenData, null, 2));
+
+    // Check for TikTok OAuth errors
+    if (tokenData.error) {
+      const errorMsg = tokenData.error_description || tokenData.error;
+      console.error('TikTok OAuth error:', errorMsg);
+      throw new Error(`TikTok authentication failed: ${errorMsg}`);
+    }
+
+    const { access_token, refresh_token, scope } = tokenData;
+
+    if (!access_token) {
+      throw new Error('TikTok did not return an access token');
+    }
+
+    console.log('Required scopes:', this.scopes);
+    console.log('Granted scope:', scope);
+
+    // TikTok API may not return scope field, skip check if undefined
+    if (scope) {
+      this.checkScopes(this.scopes, scope);
+    } else {
+      console.log('TikTok did not return scope field, skipping scope validation');
+    }
+
+    const userInfoResponse = await fetch(
+      'https://open.tiktokapis.com/v2/user/info/?fields=open_id,avatar_url,display_name,union_id,username',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+
+    const userInfoData = await userInfoResponse.json();
+    console.log('TikTok user info response:', JSON.stringify(userInfoData, null, 2));
+
+    if (userInfoData.error || !userInfoData.data?.user) {
+      const errorMsg = userInfoData.error?.message || 'Failed to fetch user info';
+      throw new Error(`TikTok user info failed: ${errorMsg}`);
+    }
+
+    const { avatar_url, display_name, open_id, username } = userInfoData.data.user;
 
     return {
       id: open_id.replace(/-/g, ''),
