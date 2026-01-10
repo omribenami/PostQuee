@@ -350,7 +350,8 @@ export class TiktokProvider extends SocialAbstract implements SocialProvider {
     const userInfoData = await userInfoResponse.json();
     console.log('TikTok user info response:', JSON.stringify(userInfoData, null, 2));
 
-    if (userInfoData.error || !userInfoData.data?.user) {
+    // TikTok API returns error object even on success with code: "ok"
+    if ((userInfoData.error && userInfoData.error.code !== 'ok') || !userInfoData.data?.user) {
       const errorMsg = userInfoData.error?.message || 'Failed to fetch user info';
       throw new Error(`TikTok user info failed: ${errorMsg}`);
     }
