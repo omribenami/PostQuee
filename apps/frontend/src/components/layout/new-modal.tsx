@@ -135,7 +135,7 @@ export const Component: FC<{
           !modal.fullScreen
             ? 'pb-[50px] min-w-full min-h-full'
             : 'w-full h-full',
-          'fixed flex left-0 top-0 bg-popup transition-all animate-fadeIn overflow-y-auto text-newTextColor',
+          'fixed flex left-0 top-0 bg-[var(--popup-color)] backdrop-blur-md transition-all animate-fadeIn overflow-y-auto text-newTextColor',
           !isLast && '!overflow-hidden'
         )}
       >
