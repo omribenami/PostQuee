@@ -6,17 +6,22 @@ This project uses a structured approach to manage environment variables across d
 
 ```
 /opt/PostQuee-dev/ (Development)
-├── .env                           # Shared environment variables (NOT in git)
+├── .env                           # Shared environment variables (NOT in git) - MASTER COPY
 ├── .env.example                   # Example shared variables (IN git)
 ├── docker-compose.dev.yaml        # Dev-specific Docker config (NOT in git)
 ├── docker-compose.dev.yaml.example # Dev Docker example (IN git)
 └── ...
 
 /opt/PostQuee/ (Production)
-├── .env                           # Shared environment variables (NOT in git)
+├── .env -> /opt/PostQuee-dev/.env # Symlink to dev .env (NOT in git)
 ├── docker-compose.yaml            # Prod-specific Docker config (NOT in git)
 └── ...
 ```
+
+**Important**: The production `.env` is a symlink to the development `.env`. This means:
+- You only need to edit one file: `/opt/PostQuee-dev/.env`
+- Changes automatically apply to both environments
+- Guaranteed consistency between prod and dev shared variables
 
 ## Environment Variable Structure
 
@@ -86,14 +91,18 @@ These variables are **different between environments**:
 
 ### For Production Environment
 
-1. **Copy example files**:
+1. **Copy docker-compose example file**:
    ```bash
    cd /opt/PostQuee
-   cp .env.example .env
    cp docker-compose.yaml.example docker-compose.yaml
    ```
 
-2. **Edit .env** with your actual API keys and secrets (same as development)
+2. **Create .env symlink** (if not already exists):
+   ```bash
+   ln -s /opt/PostQuee-dev/.env /opt/PostQuee/.env
+   ```
+
+   Note: The `.env` file is shared via symlink from development. Edit only `/opt/PostQuee-dev/.env`.
 
 3. **Edit docker-compose.yaml** with your production-specific values:
    - Supabase DATABASE_URL
@@ -106,12 +115,32 @@ These variables are **different between environments**:
    /opt/PostQuee/rebuild.sh
    ```
 
+## Managing Shared Environment Variables
+
+Since production uses a symlink to the development `.env` file:
+
+**To update shared variables (API keys, secrets, etc.):**
+```bash
+# Edit the master .env file in development
+vim /opt/PostQuee-dev/.env
+
+# Changes automatically apply to production (via symlink)
+# No need to copy or sync files
+```
+
+**To verify the symlink:**
+```bash
+ls -lah /opt/PostQuee/.env
+# Should show: /opt/PostQuee/.env -> /opt/PostQuee-dev/.env
+```
+
 ## Security Notes
 
 - **NEVER commit** `.env` or `docker-compose.yaml` files to git
 - These files contain sensitive credentials and must remain local only
 - The `.gitignore` is configured to exclude these files automatically
 - Only `.example` files should be committed to git as templates
+- The `.env` symlink in production ensures consistency without duplication
 
 ## Workflow Reminder
 
