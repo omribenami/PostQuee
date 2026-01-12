@@ -1,0 +1,146 @@
+services:
+  # ==========================================
+  # 1. NGINX PROXY MANAGER
+  # ==========================================
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '81:81'
+    env_file:
+      - ./.env
+    environment:
+      DB_SQLITE_FILE: "/data/database.sqlite"
+    volumes:
+      - ./npm/data:/data
+      - ./npm/letsencrypt:/etc/letsencrypt
+    networks:
+      - postiz-network
+    healthcheck:
+      test: ["CMD", "/usr/bin/check-health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ==========================================
+  # 2. POSTIZ APP (Production)
+  # ==========================================
+  postiz-app:
+    container_name: postiz-app
+    build:
+      context: /opt/PostQuee
+      dockerfile: Dockerfile.dev
+    image: localhost/postiz-app:latest
+    restart: always
+    ports:
+      - "4200:4200"
+      - "5000:5000"
+      - "3000:3000"
+    env_file:
+      - ./.env
+    environment:
+      # ==========================================
+      # PRODUCTION-SPECIFIC VARIABLES
+      # ==========================================
+      # Database - Supabase PostgreSQL
+      # Format: postgresql://postgres:YOUR_PASSWORD@YOUR_PROJECT_REF.supabase.co:5432/postgres?schema=public&connection_limit=15
+      DATABASE_URL: "postgresql://postgres:YOUR_SUPABASE_PASSWORD@YOUR_PROJECT_REF.supabase.co:5432/postgres?schema=public&connection_limit=15"
+
+      # Redis - Production instance
+      REDIS_URL: "redis://postiz-redis:6379"
+
+      # URLs - Production domain
+      MAIN_URL: "https://your-production-domain.com"
+      FRONTEND_URL: "https://your-production-domain.com"
+      NEXT_PUBLIC_BACKEND_URL: "https://your-production-domain.com/api"
+      BACKEND_INTERNAL_URL: "http://localhost:3000"
+
+      # Security - Production JWT secret (generate a secure random string)
+      JWT_SECRET: "your-production-jwt-secret-here"
+
+      # Cookies - Production cookie name
+      COOKIE_NAME: "auth-prod"
+      NEXT_PUBLIC_COOKIE_NAME: "auth-prod"
+
+    depends_on:
+      postiz-redis:
+        condition: service_healthy
+    networks:
+      - postiz-network
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./uploads:/app/uploads
+
+  # ==========================================
+  # 3. REDIS (Production)
+  # ==========================================
+  postiz-redis:
+    image: redis:7.2-alpine
+    container_name: postiz-redis
+    restart: always
+    volumes:
+      - postiz_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - postiz-network
+
+  # ==========================================
+  # 4. WORDPRESS
+  # ==========================================
+  wordpress-app:
+    image: wordpress:latest
+    container_name: wordpress-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_secure_password
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_MEMORY_LIMIT', '256M');
+    volumes:
+      - ./wp-content:/var/www/html/wp-content
+    networks:
+      - postiz-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      - wordpress-db
+
+  wordpress-db:
+    image: mariadb:latest
+    container_name: wordpress-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress_secure_password
+      MYSQL_ROOT_PASSWORD: root_secure_password
+    volumes:
+      - ./db-data:/var/lib/mysql
+    networks:
+      - postiz-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  postiz-network:
+    driver: bridge
+
+volumes:
+  postiz_redis_data:

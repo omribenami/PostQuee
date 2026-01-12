@@ -1,6 +1,6 @@
 services:
   # ==========================================
-  # 1. POSTIZ APP (DEV)
+  # 1. POSTIZ APP (Development)
   # ==========================================
   postiz-app-dev:
     container_name: postiz-app-dev
@@ -10,11 +10,39 @@ services:
     image: localhost/postiz-app-dev:latest
     restart: unless-stopped
     ports:
-      - "4201:4200" 
+      - "4201:4200"
       - "5001:5000"
       - "3001:3000"
     env_file:
-      - ./.dev
+      - ./.env
+    environment:
+      # ==========================================
+      # DEVELOPMENT-SPECIFIC VARIABLES
+      # ==========================================
+      # Database - Local PostgreSQL
+      DATABASE_URL: "postgresql://postiz-user:postiz-password@postiz-postgres-dev:5432/postiz-db-dev"
+
+      # Redis - Development instance
+      REDIS_URL: "redis://postiz-redis-dev:6379"
+
+      # URLs - Development domain
+      MAIN_URL: "https://dev.yourdomain.com"
+      FRONTEND_URL: "https://dev.yourdomain.com"
+      NEXT_PUBLIC_BACKEND_URL: "https://dev.yourdomain.com/api"
+      BACKEND_INTERNAL_URL: "http://localhost:3000"
+
+      # Security - Development JWT secret (generate a secure random string)
+      JWT_SECRET: "your-development-jwt-secret-here"
+
+      # Cookies - Development cookie name
+      COOKIE_NAME: "auth-dev"
+      NEXT_PUBLIC_COOKIE_NAME: "auth-dev"
+
+      # Postgres credentials for local database
+      POSTGRES_USER: "postiz-user"
+      POSTGRES_PASSWORD: "postiz-password"
+      POSTGRES_DB: "postiz-db-dev"
+
     depends_on:
       postiz-postgres-dev:
         condition: service_healthy
@@ -22,14 +50,13 @@ services:
         condition: service_healthy
     networks:
       - postiz-network-dev
-#      - postiz-network
     volumes:
       - ./:/app
-      - ./.dev:/app/.env:ro
+      - ./.env:/app/.env:ro
       - ./uploads:/app/uploads
 
   # ==========================================
-  # 2. DATABASE (DEV)
+  # 2. DATABASE (Development - Local PostgreSQL)
   # ==========================================
   postiz-postgres-dev:
     image: postgres:17-alpine
@@ -38,9 +65,9 @@ services:
     environment:
       POSTGRES_USER: postiz-user
       POSTGRES_PASSWORD: postiz-password
-      POSTGRES_DB: postiz-db-dev # שם DB שונה ליתר ביטחון
+      POSTGRES_DB: postiz-db-dev
     volumes:
-      - postiz_postgres_data_dev:/var/lib/postgresql/data # ווליום נפרד לחלוטין!
+      - postiz_postgres_data_dev:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postiz-user -d postiz-db-dev"]
       interval: 10s
@@ -50,14 +77,14 @@ services:
       - postiz-network-dev
 
   # ==========================================
-  # 3. REDIS (DEV)
+  # 3. REDIS (Development)
   # ==========================================
   postiz-redis-dev:
     image: redis:7.2-alpine
     container_name: postiz-redis-dev
     restart: unless-stopped
     volumes:
-      - postiz_redis_data_dev:/data # ווליום נפרד
+      - postiz_redis_data_dev:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -69,10 +96,6 @@ services:
 networks:
   postiz-network-dev:
     driver: bridge
-
-# postiz-network:
-#    external: true
-
 
 volumes:
   postiz_postgres_data_dev:
