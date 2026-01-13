@@ -209,6 +209,11 @@ testem.log
 # Libraries
 libraries/plugins/src/plugins.ts
 
+# ============================================
+# AI Assistant Instructions (Local Only)
+# ============================================
+CLAUDE.md
+
 # Docker compose files with sensitive data
 docker-compose.yml
 docker-compose.yaml
