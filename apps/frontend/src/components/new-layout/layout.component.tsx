@@ -1,4 +1,5 @@
 'use client';
+import { MobileNav } from '@gitroom/frontend/components/new-layout/mobile-nav.component';
 
 import React, { ReactNode, useCallback } from 'react';
 import { Logo } from '@gitroom/frontend/components/new-layout/logo';
