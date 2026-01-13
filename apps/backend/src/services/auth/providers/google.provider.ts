@@ -4,10 +4,11 @@ import { OAuth2Client } from 'google-auth-library/build/src/auth/oauth2client';
 import { ProvidersInterface } from '@gitroom/backend/services/auth/providers.interface';
 
 const clientAndYoutube = () => {
+  // For user authentication, use GOOGLE credentials and redirect to /settings
   const client = new google.auth.OAuth2({
-    clientId: process.env.YOUTUBE_CLIENT_ID,
-    clientSecret: process.env.YOUTUBE_CLIENT_SECRET,
-    redirectUri: `${process.env.FRONTEND_URL}/integrations/social/youtube`,
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    redirectUri: `${process.env.FRONTEND_URL}/settings`,
   });
 
   const youtube = (newClient: OAuth2Client) =>
@@ -39,7 +40,8 @@ export class GoogleProvider implements ProvidersInterface {
       access_type: 'online',
       prompt: 'consent',
       state,
-      redirect_uri: `${process.env.FRONTEND_URL}/integrations/social/youtube`,
+      // User authentication redirects to /settings (same as GitHub)
+      redirect_uri: `${process.env.FRONTEND_URL}/settings`,
       scope: [
         'https://www.googleapis.com/auth/userinfo.profile',
         'https://www.googleapis.com/auth/userinfo.email',
@@ -49,7 +51,10 @@ export class GoogleProvider implements ProvidersInterface {
 
   async getToken(code: string) {
     const { client, oauth2 } = clientAndYoutube();
-    const { tokens } = await client.getToken(code);
+    const { tokens } = await client.getToken({
+      code,
+      redirect_uri: `${process.env.FRONTEND_URL}/settings`,
+    });
     return tokens.access_token;
   }
 
