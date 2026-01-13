@@ -7,7 +7,7 @@ import { useReturnUrl } from '@gitroom/frontend/app/(app)/auth/return.url.compon
 import { useVariables } from '@gitroom/react/helpers/variable.context';
 
 // Cookie name - can be overridden via NEXT_PUBLIC_COOKIE_NAME env var for dev/prod separation
-const AUTH_COOKIE_NAME = process.env.NEXT_PUBLIC_COOKIE_NAME || 'auth';
+export const AUTH_COOKIE_NAME = process.env.NEXT_PUBLIC_COOKIE_NAME || 'auth';
 
 export default function LayoutContext(params: { children: ReactNode }) {
   if (params?.children) {

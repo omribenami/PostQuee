@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
-import { setCookie } from '@gitroom/frontend/components/layout/layout.context';
+import { setCookie, AUTH_COOKIE_NAME } from '@gitroom/frontend/components/layout/layout.context';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
 export const LogoutComponent = () => {
   const fetch = useFetch();
@@ -23,7 +23,7 @@ export const LogoutComponent = () => {
       )
     ) {
       if (!isSecured) {
-        setCookie('auth', '', -10);
+        setCookie(AUTH_COOKIE_NAME, '', -10);
       } else {
         await fetch('/user/logout', {
           method: 'POST',
