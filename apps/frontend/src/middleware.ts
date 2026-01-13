@@ -13,6 +13,7 @@ acceptLanguage.languages(languages);
 
 // Cookie configuration - can be overridden via env vars for dev/prod separation
 const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+const USE_COOKIE_DOMAIN = process.env.COOKIE_DOMAIN !== '';
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || getCookieUrlFromDomain(process.env.FRONTEND_URL!);
 
 // This function can be marked `async` if using `await` inside
@@ -61,7 +62,7 @@ export async function middleware(request: NextRequest) {
         }
         : {}),
       maxAge: -1,
-      domain: COOKIE_DOMAIN,
+      ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
     });
     return response;
   }
@@ -99,7 +100,7 @@ export async function middleware(request: NextRequest) {
             secure: true,
             httpOnly: true,
             sameSite: 'none',
-            domain: COOKIE_DOMAIN,
+            ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
           }
           : {}),
         expires: new Date(Date.now() + 15 * 60 * 1000),
@@ -129,7 +130,7 @@ export async function middleware(request: NextRequest) {
               secure: true,
               httpOnly: true,
               sameSite: 'none',
-              domain: COOKIE_DOMAIN,
+              ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
             }
             : {}),
           expires: new Date(Date.now() + 15 * 60 * 1000),

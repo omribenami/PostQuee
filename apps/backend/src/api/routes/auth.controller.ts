@@ -25,6 +25,8 @@ import * as Sentry from '@sentry/nestjs';
 
 // Cookie configuration - can be overridden via env vars for dev/prod separation
 const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+// Empty COOKIE_DOMAIN = omit domain attribute for exact subdomain matching (no subdomain sharing)
+const USE_COOKIE_DOMAIN = process.env.COOKIE_DOMAIN !== '';
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || getCookieUrlFromDomain(process.env.FRONTEND_URL!);
 
 @ApiTags('Auth')
@@ -73,7 +75,7 @@ export class AuthController {
       }
 
       response.cookie(AUTH_COOKIE_NAME, jwt, {
-        domain: COOKIE_DOMAIN,
+        ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
         ...(!process.env.NOT_SECURED
           ? {
               secure: true,
@@ -90,7 +92,7 @@ export class AuthController {
 
       if (typeof addedOrg !== 'boolean' && addedOrg?.organizationId) {
         response.cookie('showorg', addedOrg.organizationId, {
-          domain: COOKIE_DOMAIN,
+          ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
           ...(!process.env.NOT_SECURED
             ? {
                 secure: true,
@@ -138,7 +140,7 @@ export class AuthController {
       );
 
       response.cookie(AUTH_COOKIE_NAME, jwt, {
-        domain: COOKIE_DOMAIN,
+        ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
         ...(!process.env.NOT_SECURED
           ? {
               secure: true,
@@ -155,7 +157,7 @@ export class AuthController {
 
       if (typeof addedOrg !== 'boolean' && addedOrg?.organizationId) {
         response.cookie('showorg', addedOrg.organizationId, {
-          domain: COOKIE_DOMAIN,
+          ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
           ...(!process.env.NOT_SECURED
             ? {
                 secure: true,

@@ -803,3 +803,41 @@ html[dir='rtl'] [dir='ltr'] {
   background: var(--new-btn-primary) !important;
   color: #fff !important;
 }
+/* --- MODERN HIGH TECH OVERRIDES --- */
+
+/* Sleek Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Modern Menu Shadow */
+.menu-shadow {
+  box-shadow: var(--menu-shadow);
+  border: 1px solid var(--new-border);
+  background: var(--new-settings);
+}
+
+/* Glassmorphism Utility */
+.glass-panel {
+  background: rgba(18, 21, 28, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08); 
+}
+
+/* High Tech Glow on Primary Elements */
+.glow-primary {
+  box-shadow: 0 0 15px rgba(255, 105, 0, 0.15);
+}
+

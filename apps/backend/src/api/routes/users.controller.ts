@@ -33,6 +33,7 @@ import { AuthorizationActions, Sections } from '@gitroom/backend/services/auth/p
 
 // Cookie name - can be overridden via COOKIE_NAME env var for dev/prod separation
 const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+const USE_COOKIE_DOMAIN = process.env.COOKIE_DOMAIN !== '';
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || getCookieUrlFromDomain(process.env.FRONTEND_URL!);
 
 @ApiTags('User')
@@ -106,7 +107,7 @@ export class UsersController {
     }
 
     response.cookie('impersonate', id, {
-      domain: COOKIE_DOMAIN,
+      ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -197,7 +198,7 @@ export class UsersController {
     @Res({ passthrough: true }) response: Response
   ) {
     response.cookie('showorg', id, {
-      domain: COOKIE_DOMAIN,
+      ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -219,7 +220,7 @@ export class UsersController {
   logout(@Res({ passthrough: true }) response: Response) {
     response.header('logout', 'true');
     response.cookie(AUTH_COOKIE_NAME, '', {
-      domain: COOKIE_DOMAIN,
+      ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -232,7 +233,7 @@ export class UsersController {
     });
 
     response.cookie('showorg', '', {
-      domain: COOKIE_DOMAIN,
+      ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -245,7 +246,7 @@ export class UsersController {
     });
 
     response.cookie('impersonate', '', {
-      domain: COOKIE_DOMAIN,
+      ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -283,7 +284,7 @@ export class UsersController {
     );
     if (!req.cookies.track) {
       res.cookie('track', uniqueId, {
-        domain: COOKIE_DOMAIN,
+        ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
         ...(!process.env.NOT_SECURED
           ? {
               secure: true,

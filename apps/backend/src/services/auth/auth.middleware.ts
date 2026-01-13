@@ -10,11 +10,12 @@ import { MastraService } from '@gitroom/nestjs-libraries/chat/mastra.service';
 
 // Cookie configuration - can be overridden via env vars for dev/prod separation
 const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+const USE_COOKIE_DOMAIN = process.env.COOKIE_DOMAIN !== '';
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || getCookieUrlFromDomain(process.env.FRONTEND_URL!);
 
 export const removeAuth = (res: Response) => {
   res.cookie(AUTH_COOKIE_NAME, '', {
-    domain: COOKIE_DOMAIN,
+    ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
     ...(!process.env.NOT_SECURED
       ? {
           secure: true,
