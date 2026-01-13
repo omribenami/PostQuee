@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PostQuee is an open-source AI social media scheduling tool (built on Postiz) that supports multiple platforms (Instagram, YouTube, LinkedIn, X/Twitter, Facebook, TikTok, Reddit, Discord, Slack, Mastodon, Bluesky, and more). It provides scheduling, analytics, marketplace features, and AI-powered content generation.
 
+**Repository:** https://github.com/omribenami/PostQuee
+
 **Tech Stack:**
 - Monorepo architecture managed by pnpm workspaces
 - Backend: NestJS with Prisma ORM (PostgreSQL)
@@ -16,6 +18,18 @@ PostQuee is an open-source AI social media scheduling tool (built on Postiz) tha
 - Node.js: >=22.12.0 <23.0.0
 - Package Manager: pnpm 10.6.1
 
+## Knowledge Base & Documentation
+
+**Local Documentation:** `/opt/docs/`
+- Always review markdown files in `/opt/docs/` before answering architecture or setup questions
+- This local documentation provides project-specific context and decisions
+
+**Online Documentation:**
+- Main docs: https://docs.postiz.com/
+- Developer guide: https://docs.postiz.com/developer-guide
+- Public API: https://docs.postiz.com/public-api
+- Quick start: https://docs.postiz.com/quickstart
+
 ## Development & Deployment Workflow
 
 ### Environment Structure
@@ -23,15 +37,22 @@ This project uses a **two-environment setup**:
 
 1. **Development Environment**: `/opt/PostQuee-dev/`
    - All development work happens here
+   - Uses `docker-compose.dev.yaml` for orchestration
    - Connected to development database and Redis
    - Safe environment for testing changes
    - Git repository for version control
 
 2. **Production Environment**: `/opt/PostQuee/`
    - Live production application
+   - Uses `docker-compose.yaml` for orchestration
    - Serves real users
    - Only updated through controlled deployment process
    - **NEVER make direct changes here**
+
+**Configuration:**
+- Both environments share the same `.env` file
+- Environment-specific overrides are handled within their respective docker-compose files
+- Always update `.env.example` when adding new environment variables
 
 ### Development Workflow (CRITICAL)
 **ALWAYS follow this workflow when making changes:**
@@ -64,16 +85,37 @@ This project uses a **two-environment setup**:
      - Build the application
      - Restart all services in production
 
-### Important Rules
+### Workflow Rules (STRICT - MUST FOLLOW)
+
+**Authorization:**
+- You are ONLY authorized to make code changes in the **Development environment** (`/opt/PostQuee-dev/`)
+- You are NEVER authorized to make direct code edits in the **Production environment** (`/opt/PostQuee/`)
+
+**Deployment Flow (One-Way Only):**
+- The deployment flow is strictly: **Dev → Git Commit → Production Pull**
+- NEVER edit files directly in Production
+- ALWAYS develop and test in `/opt/PostQuee-dev/` (development) first
+- ALWAYS commit and push to git before deploying to production
+- ALWAYS test changes thoroughly in development before deploying
+- Use `/opt/PostQuee/rebuild.sh` script for production deployments only
+
+### 🚨 PRIME DIRECTIVE (SAFETY) 🚨
+
+**NEVER DELETE DATA - This is the highest priority rule:**
+- Under NO circumstances are you allowed to delete, drop, or reset any database
+- Under NO circumstances are you allowed to delete or destroy any persistent volumes
+- Do NOT run `prisma-reset`, `DROP DATABASE`, `TRUNCATE`, or any destructive database commands
+- Do NOT delete database files, tables, or volumes
+- Do NOT run any Docker commands that remove volumes (e.g., `docker volume rm`, `docker-compose down -v`)
+- If a reset or data deletion is needed, you MUST ask for explicit user permission first
+- Database and volumes contain critical production data that cannot be recovered if deleted
+
+**Important Rules Summary:**
 - ⚠️ **NEVER** make direct code changes in `/opt/PostQuee/` (production)
+- ⚠️ **NEVER** delete or reset databases or persistent volumes without explicit permission
 - ⚠️ **ALWAYS** develop and test in `/opt/PostQuee-dev/` (development) first
 - ⚠️ **ALWAYS** commit and push to git before deploying to production
 - ⚠️ **ALWAYS** test changes thoroughly in development before deploying
-- ⚠️ Use `/opt/PostQuee/rebuild.sh` script for production deployments only
-- 🚨 **CRITICAL**: **NEVER DELETE OR ERASE THE DATABASE** under any circumstances
-  - Do NOT run `prisma-reset`, `DROP DATABASE`, or any destructive database commands
-  - Do NOT delete database files or tables
-  - Database contains critical production data that cannot be recovered
 
 ## Repository Structure
 
@@ -134,14 +176,17 @@ pnpm run build:extension        # Build browser extension
 ### Database (Prisma)
 ```bash
 pnpm run prisma-generate        # Generate Prisma client
-pnpm run prisma-db-push         # Push schema changes to database
+pnpm run prisma-db-push         # Push schema changes to database (safe, preserves data)
 pnpm run prisma-db-pull         # Pull schema from database
-pnpm run prisma-reset           # ⛔ NEVER USE - Destructive command that deletes all data
+pnpm run prisma-reset           # ⛔ NEVER USE - Destructive command that deletes ALL data
 ```
 
-**Important:**
+**🚨 CRITICAL - Database Safety:**
 - Prisma schema is located at `libraries/nestjs-libraries/src/database/prisma/schema.prisma`
-- 🚨 **NEVER run `prisma-reset` or any command that deletes database data**
+- **NEVER run `prisma-reset`** - This command deletes ALL database data
+- **NEVER run `DROP DATABASE`, `TRUNCATE`, or any destructive SQL commands**
+- ONLY use `prisma-db-push` for schema changes (it preserves existing data)
+- If you need to perform a destructive operation, you MUST ask for explicit user permission first
 - Database contains critical production data that cannot be recovered if deleted
 
 ### Testing
@@ -335,22 +380,19 @@ The monorepo uses TypeScript path aliases (defined in `tsconfig.base.json`):
 3. Prisma client regenerates automatically via postinstall hook
 4. Update related DTOs and types
 
-**⚠️ CRITICAL WARNING**: When modifying database schema:
-- Only use `prisma-db-push` for schema updates (preserves existing data)
-- **NEVER** use `prisma-reset` or any commands that delete data
-- Always backup database before making schema changes in production
-- Test schema changes in development environment first
+**🚨 CRITICAL WARNING - PRIME DIRECTIVE**: When modifying database schema:
+- ONLY use `prisma-db-push` for schema updates (preserves existing data)
+- **NEVER** use `prisma-reset` - This deletes ALL data and is forbidden
+- **NEVER** run `DROP DATABASE`, `TRUNCATE`, or any destructive commands
+- **NEVER** delete database files, tables, or volumes
+- If you need to perform a destructive operation, you MUST ask for explicit user permission first
+- Always test schema changes in development environment first
+- Database contains critical production data that cannot be recovered if deleted
 
 ## Testing
 - Jest configuration uses NX workspace setup
 - Coverage reports in `./reports/junit.xml`
 - Test command: `pnpm test` (runs with `--detectOpenHandles` and coverage)
-
-## Documentation
-- Main docs: https://docs.postiz.com/
-- Developer guide: https://docs.postiz.com/developer-guide
-- Public API: https://docs.postiz.com/public-api
-- Quick start: https://docs.postiz.com/quickstart
 
 ## License
 AGPL-3.0
