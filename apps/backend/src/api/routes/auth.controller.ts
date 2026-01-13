@@ -220,7 +220,7 @@ export class AuthController {
     }
 
     response.cookie(AUTH_COOKIE_NAME, activate, {
-      domain: COOKIE_DOMAIN,
+      ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -253,7 +253,7 @@ export class AuthController {
     }
 
     response.cookie(AUTH_COOKIE_NAME, jwt, {
-      domain: COOKIE_DOMAIN,
+      ...(USE_COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
