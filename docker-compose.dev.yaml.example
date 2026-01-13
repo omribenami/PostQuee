@@ -52,7 +52,7 @@ services:
       - postiz-network-dev
     volumes:
       - ./:/app
-      - ./.dev:/app/.env:ro
+      - ./.env:/app/.env:ro
       - ./uploads:/app/uploads
 
   # ==========================================
