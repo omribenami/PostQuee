@@ -8,8 +8,11 @@ import { getCookieUrlFromDomain } from '@gitroom/helpers/subdomain/subdomain.man
 import { HttpForbiddenException } from '@gitroom/nestjs-libraries/services/exception.filter';
 import { MastraService } from '@gitroom/nestjs-libraries/chat/mastra.service';
 
+// Cookie name - can be overridden via COOKIE_NAME env var for dev/prod separation
+const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+
 export const removeAuth = (res: Response) => {
-  res.cookie('auth', '', {
+  res.cookie(AUTH_COOKIE_NAME, '', {
     domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
     ...(!process.env.NOT_SECURED
       ? {
@@ -31,7 +34,7 @@ export class AuthMiddleware implements NestMiddleware {
     private _userService: UsersService
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
-    const auth = req.headers.auth || req.cookies.auth;
+    const auth = req.headers[AUTH_COOKIE_NAME] || req.cookies[AUTH_COOKIE_NAME];
     if (!auth) {
       throw new HttpForbiddenException();
     }

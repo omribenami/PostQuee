@@ -23,6 +23,9 @@ import { UserAgent } from '@gitroom/nestjs-libraries/user/user.agent';
 import { Provider } from '@prisma/client';
 import * as Sentry from '@sentry/nestjs';
 
+// Cookie name - can be overridden via COOKIE_NAME env var for dev/prod separation
+const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+
 @ApiTags('Auth')
 @Controller('/auth')
 export class AuthController {
@@ -68,7 +71,7 @@ export class AuthController {
         return;
       }
 
-      response.cookie('auth', jwt, {
+      response.cookie(AUTH_COOKIE_NAME, jwt, {
         domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
         ...(!process.env.NOT_SECURED
           ? {
@@ -81,7 +84,7 @@ export class AuthController {
       });
 
       if (process.env.NOT_SECURED) {
-        response.header('auth', jwt);
+        response.header(AUTH_COOKIE_NAME, jwt);
       }
 
       if (typeof addedOrg !== 'boolean' && addedOrg?.organizationId) {
@@ -133,7 +136,7 @@ export class AuthController {
         getOrgFromCookie
       );
 
-      response.cookie('auth', jwt, {
+      response.cookie(AUTH_COOKIE_NAME, jwt, {
         domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
         ...(!process.env.NOT_SECURED
           ? {
@@ -146,7 +149,7 @@ export class AuthController {
       });
 
       if (process.env.NOT_SECURED) {
-        response.header('auth', jwt);
+        response.header(AUTH_COOKIE_NAME, jwt);
       }
 
       if (typeof addedOrg !== 'boolean' && addedOrg?.organizationId) {
@@ -213,7 +216,7 @@ export class AuthController {
       return response.status(200).json({ can: false });
     }
 
-    response.cookie('auth', activate, {
+    response.cookie(AUTH_COOKIE_NAME, activate, {
       domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
       ...(!process.env.NOT_SECURED
         ? {
@@ -226,7 +229,7 @@ export class AuthController {
     });
 
     if (process.env.NOT_SECURED) {
-      response.header('auth', activate);
+      response.header(AUTH_COOKIE_NAME, activate);
     }
 
     response.header('onboarding', 'true');
@@ -246,7 +249,7 @@ export class AuthController {
       return response.json({ token });
     }
 
-    response.cookie('auth', jwt, {
+    response.cookie(AUTH_COOKIE_NAME, jwt, {
       domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
       ...(!process.env.NOT_SECURED
         ? {
@@ -259,7 +262,7 @@ export class AuthController {
     });
 
     if (process.env.NOT_SECURED) {
-      response.header('auth', jwt);
+      response.header(AUTH_COOKIE_NAME, jwt);
     }
 
     response.header('reload', 'true');

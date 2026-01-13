@@ -16,6 +16,65 @@ PostQuee is an open-source AI social media scheduling tool (built on Postiz) tha
 - Node.js: >=22.12.0 <23.0.0
 - Package Manager: pnpm 10.6.1
 
+## Development & Deployment Workflow
+
+### Environment Structure
+This project uses a **two-environment setup**:
+
+1. **Development Environment**: `/opt/PostQuee-dev/`
+   - All development work happens here
+   - Connected to development database and Redis
+   - Safe environment for testing changes
+   - Git repository for version control
+
+2. **Production Environment**: `/opt/PostQuee/`
+   - Live production application
+   - Serves real users
+   - Only updated through controlled deployment process
+   - **NEVER make direct changes here**
+
+### Development Workflow (CRITICAL)
+**ALWAYS follow this workflow when making changes:**
+
+1. **Work in Development** (`/opt/PostQuee-dev/`)
+   - Make all code changes in the development environment
+   - Test thoroughly to ensure changes work correctly
+   - Run the application locally to validate functionality
+   - Fix any issues before proceeding
+
+2. **Commit and Push to Git**
+   - Once changes are verified and working in development:
+     ```bash
+     cd /opt/PostQuee-dev
+     git add .
+     git commit -m "feat: your descriptive commit message"
+     git push origin master
+     ```
+   - Use conventional commit messages (feat:, fix:, chore:, etc.)
+   - Ensure all changes are committed before deploying
+
+3. **Deploy to Production**
+   - After changes are pushed to git and verified, deploy to production:
+     ```bash
+     /opt/PostQuee/rebuild.sh
+     ```
+   - This script will:
+     - Pull latest changes from git
+     - Install dependencies
+     - Build the application
+     - Restart all services in production
+
+### Important Rules
+- ⚠️ **NEVER** make direct code changes in `/opt/PostQuee/` (production)
+- ⚠️ **ALWAYS** develop and test in `/opt/PostQuee-dev/` (development) first
+- ⚠️ **ALWAYS** commit and push to git before deploying to production
+- ⚠️ **ALWAYS** test changes thoroughly in development before deploying
+- ⚠️ Use `/opt/PostQuee/rebuild.sh` script for production deployments only
+- 🚨 **CRITICAL**: **NEVER DELETE OR ERASE THE DATABASE** under any circumstances
+  - Do NOT run `prisma-reset`, `DROP DATABASE`, or any destructive database commands
+  - Do NOT delete database files or tables
+  - Database contains critical production data that cannot be recovered
+
 ## Repository Structure
 
 ```
@@ -43,14 +102,14 @@ pnpm install                    # Install dependencies (also runs prisma-generat
 
 ### Running Services
 ```bash
-# Run all services in development
+# Run all services in development (recommended for full-stack development)
 pnpm run dev                    # Runs backend, frontend, workers, cron, extension concurrently
 
-# Run individual services
-pnpm run dev:backend            # Backend API only
-pnpm run dev:frontend           # Frontend only
-pnpm run dev:workers            # Workers only
-pnpm run dev:cron               # Cron only
+# Run individual services (useful when working on specific components)
+pnpm run dev:backend            # Backend API only (port 3000)
+pnpm run dev:frontend           # Frontend only (port 4200)
+pnpm run dev:workers            # Workers only (background job processors)
+pnpm run dev:cron               # Cron only (scheduled tasks)
 
 # Production mode
 pnpm run start:prod:backend
@@ -77,10 +136,13 @@ pnpm run build:extension        # Build browser extension
 pnpm run prisma-generate        # Generate Prisma client
 pnpm run prisma-db-push         # Push schema changes to database
 pnpm run prisma-db-pull         # Pull schema from database
-pnpm run prisma-reset           # Reset database (WARNING: destructive)
+pnpm run prisma-reset           # ⛔ NEVER USE - Destructive command that deletes all data
 ```
 
-**Important:** Prisma schema is located at `libraries/nestjs-libraries/src/database/prisma/schema.prisma`
+**Important:**
+- Prisma schema is located at `libraries/nestjs-libraries/src/database/prisma/schema.prisma`
+- 🚨 **NEVER run `prisma-reset` or any command that deletes database data**
+- Database contains critical production data that cannot be recovered if deleted
 
 ### Testing
 ```bash
@@ -134,7 +196,7 @@ The monorepo uses shared libraries to avoid code duplication:
 - `3rdparties/`: Third-party service integrations (Make.com, N8N)
 - `newsletter/`: Newsletter integrations
 - `short-linking/`: URL shortening services (Dub, Short.io, Kutt, LinkDrip)
-- `sentry/`: Error tracking and logging
+- `sentry/`: Error tracking and logging (initialized in backend main.ts and frontend)
 
 **react-shared-libraries/** contains:
 - Shared React components
@@ -157,6 +219,7 @@ The monorepo uses shared libraries to avoid code duplication:
 - Styling: Tailwind CSS + SCSS modules (colors.scss, global.scss)
 - State Management: Zustand, SWR for data fetching
 - UI Libraries: Mantine, custom components
+- AI Integration: CopilotKit for AI-powered features (endpoint: `/copilot/*`)
 
 ### Database Schema (Prisma)
 Key models:
@@ -268,9 +331,15 @@ The monorepo uses TypeScript path aliases (defined in `tsconfig.base.json`):
 
 ### Database Schema Changes
 1. Modify `libraries/nestjs-libraries/src/database/prisma/schema.prisma`
-2. Run `pnpm run prisma-db-push` to apply changes
+2. Run `pnpm run prisma-db-push` to apply changes (non-destructive migration)
 3. Prisma client regenerates automatically via postinstall hook
 4. Update related DTOs and types
+
+**⚠️ CRITICAL WARNING**: When modifying database schema:
+- Only use `prisma-db-push` for schema updates (preserves existing data)
+- **NEVER** use `prisma-reset` or any commands that delete data
+- Always backup database before making schema changes in production
+- Test schema changes in development environment first
 
 ## Testing
 - Jest configuration uses NX workspace setup

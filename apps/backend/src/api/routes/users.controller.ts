@@ -31,6 +31,9 @@ import { TrackService } from '@gitroom/nestjs-libraries/track/track.service';
 import { makeId } from '@gitroom/nestjs-libraries/services/make.is';
 import { AuthorizationActions, Sections } from '@gitroom/backend/services/auth/permissions/permission.exception.class';
 
+// Cookie name - can be overridden via COOKIE_NAME env var for dev/prod separation
+const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+
 @ApiTags('User')
 @Controller('/user')
 export class UsersController {
@@ -214,7 +217,7 @@ export class UsersController {
   @Post('/logout')
   logout(@Res({ passthrough: true }) response: Response) {
     response.header('logout', 'true');
-    response.cookie('auth', '', {
+    response.cookie(AUTH_COOKIE_NAME, '', {
       domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
       ...(!process.env.NOT_SECURED
         ? {

@@ -5,6 +5,10 @@ import { FetchWrapperComponent } from '@gitroom/helpers/utils/custom.fetch';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import { useReturnUrl } from '@gitroom/frontend/app/(app)/auth/return.url.component';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
+
+// Cookie name - can be overridden via NEXT_PUBLIC_COOKIE_NAME env var for dev/prod separation
+const AUTH_COOKIE_NAME = process.env.NEXT_PUBLIC_COOKIE_NAME || 'auth';
+
 export default function LayoutContext(params: { children: ReactNode }) {
   if (params?.children) {
     // eslint-disable-next-line react/no-children-prop
@@ -34,7 +38,7 @@ function LayoutContextInner(params: { children: ReactNode }) {
         return true;
       }
       const headerAuth =
-        response?.headers?.get('auth') || response?.headers?.get('Auth');
+        response?.headers?.get(AUTH_COOKIE_NAME) || response?.headers?.get(AUTH_COOKIE_NAME.charAt(0).toUpperCase() + AUTH_COOKIE_NAME.slice(1));
       const showOrg =
         response?.headers?.get('showorg') || response?.headers?.get('Showorg');
       const impersonate =
@@ -43,7 +47,7 @@ function LayoutContextInner(params: { children: ReactNode }) {
       const logout =
         response?.headers?.get('logout') || response?.headers?.get('Logout');
       if (headerAuth) {
-        setCookie('auth', headerAuth, 365);
+        setCookie(AUTH_COOKIE_NAME, headerAuth, 365);
       }
       if (showOrg) {
         setCookie('showorg', showOrg, 365);
@@ -52,7 +56,7 @@ function LayoutContextInner(params: { children: ReactNode }) {
         setCookie('impersonate', impersonate, 365);
       }
       if (logout && !isSecured) {
-        setCookie('auth', '', -10);
+        setCookie(AUTH_COOKIE_NAME, '', -10);
         setCookie('showorg', '', -10);
         setCookie('impersonate', '', -10);
         window.location.href = '/';
@@ -82,7 +86,7 @@ function LayoutContextInner(params: { children: ReactNode }) {
 
       if (response.status === 401 || response?.headers?.get('logout')) {
         if (!isSecured) {
-          setCookie('auth', '', -10);
+          setCookie(AUTH_COOKIE_NAME, '', -10);
           setCookie('showorg', '', -10);
           setCookie('impersonate', '', -10);
         }

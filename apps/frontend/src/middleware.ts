@@ -11,12 +11,15 @@ import {
 } from '@gitroom/react/translation/i18n.config';
 acceptLanguage.languages(languages);
 
+// Cookie name - can be overridden via COOKIE_NAME env var for dev/prod separation
+const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   const nextUrl = request.nextUrl;
   const authCookie =
-    request.cookies.get('auth') ||
-    request.headers.get('auth') ||
+    request.cookies.get(AUTH_COOKIE_NAME) ||
+    request.headers.get(AUTH_COOKIE_NAME) ||
     nextUrl.searchParams.get('loggedAuth');
   const lng = request.cookies.has(cookieName)
     ? acceptLanguage.get(request.cookies.get(cookieName).value)
@@ -47,7 +50,7 @@ export async function middleware(request: NextRequest) {
     const response = NextResponse.redirect(
       new URL('/auth/login', nextUrl.href)
     );
-    response.cookies.set('auth', '', {
+    response.cookies.set(AUTH_COOKIE_NAME, '', {
       path: '/',
       ...(!process.env.NOT_SECURED
         ? {
