@@ -23,8 +23,9 @@ import { UserAgent } from '@gitroom/nestjs-libraries/user/user.agent';
 import { Provider } from '@prisma/client';
 import * as Sentry from '@sentry/nestjs';
 
-// Cookie name - can be overridden via COOKIE_NAME env var for dev/prod separation
+// Cookie configuration - can be overridden via env vars for dev/prod separation
 const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || getCookieUrlFromDomain(process.env.FRONTEND_URL!);
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -72,7 +73,7 @@ export class AuthController {
       }
 
       response.cookie(AUTH_COOKIE_NAME, jwt, {
-        domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+        domain: COOKIE_DOMAIN,
         ...(!process.env.NOT_SECURED
           ? {
               secure: true,
@@ -89,7 +90,7 @@ export class AuthController {
 
       if (typeof addedOrg !== 'boolean' && addedOrg?.organizationId) {
         response.cookie('showorg', addedOrg.organizationId, {
-          domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+          domain: COOKIE_DOMAIN,
           ...(!process.env.NOT_SECURED
             ? {
                 secure: true,
@@ -137,7 +138,7 @@ export class AuthController {
       );
 
       response.cookie(AUTH_COOKIE_NAME, jwt, {
-        domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+        domain: COOKIE_DOMAIN,
         ...(!process.env.NOT_SECURED
           ? {
               secure: true,
@@ -154,7 +155,7 @@ export class AuthController {
 
       if (typeof addedOrg !== 'boolean' && addedOrg?.organizationId) {
         response.cookie('showorg', addedOrg.organizationId, {
-          domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+          domain: COOKIE_DOMAIN,
           ...(!process.env.NOT_SECURED
             ? {
                 secure: true,
@@ -217,7 +218,7 @@ export class AuthController {
     }
 
     response.cookie(AUTH_COOKIE_NAME, activate, {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      domain: COOKIE_DOMAIN,
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -250,7 +251,7 @@ export class AuthController {
     }
 
     response.cookie(AUTH_COOKIE_NAME, jwt, {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      domain: COOKIE_DOMAIN,
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,

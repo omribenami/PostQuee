@@ -8,12 +8,13 @@ import { getCookieUrlFromDomain } from '@gitroom/helpers/subdomain/subdomain.man
 import { HttpForbiddenException } from '@gitroom/nestjs-libraries/services/exception.filter';
 import { MastraService } from '@gitroom/nestjs-libraries/chat/mastra.service';
 
-// Cookie name - can be overridden via COOKIE_NAME env var for dev/prod separation
+// Cookie configuration - can be overridden via env vars for dev/prod separation
 const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || getCookieUrlFromDomain(process.env.FRONTEND_URL!);
 
 export const removeAuth = (res: Response) => {
   res.cookie(AUTH_COOKIE_NAME, '', {
-    domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+    domain: COOKIE_DOMAIN,
     ...(!process.env.NOT_SECURED
       ? {
           secure: true,

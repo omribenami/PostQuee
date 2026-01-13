@@ -33,6 +33,7 @@ import { AuthorizationActions, Sections } from '@gitroom/backend/services/auth/p
 
 // Cookie name - can be overridden via COOKIE_NAME env var for dev/prod separation
 const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || getCookieUrlFromDomain(process.env.FRONTEND_URL!);
 
 @ApiTags('User')
 @Controller('/user')
@@ -105,7 +106,7 @@ export class UsersController {
     }
 
     response.cookie('impersonate', id, {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      domain: COOKIE_DOMAIN,
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -196,7 +197,7 @@ export class UsersController {
     @Res({ passthrough: true }) response: Response
   ) {
     response.cookie('showorg', id, {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      domain: COOKIE_DOMAIN,
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -218,7 +219,7 @@ export class UsersController {
   logout(@Res({ passthrough: true }) response: Response) {
     response.header('logout', 'true');
     response.cookie(AUTH_COOKIE_NAME, '', {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      domain: COOKIE_DOMAIN,
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -231,7 +232,7 @@ export class UsersController {
     });
 
     response.cookie('showorg', '', {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      domain: COOKIE_DOMAIN,
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -244,7 +245,7 @@ export class UsersController {
     });
 
     response.cookie('impersonate', '', {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      domain: COOKIE_DOMAIN,
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
@@ -282,7 +283,7 @@ export class UsersController {
     );
     if (!req.cookies.track) {
       res.cookie('track', uniqueId, {
-        domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+        domain: COOKIE_DOMAIN,
         ...(!process.env.NOT_SECURED
           ? {
               secure: true,

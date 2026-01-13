@@ -11,8 +11,9 @@ import {
 } from '@gitroom/react/translation/i18n.config';
 acceptLanguage.languages(languages);
 
-// Cookie name - can be overridden via COOKIE_NAME env var for dev/prod separation
+// Cookie configuration - can be overridden via env vars for dev/prod separation
 const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || getCookieUrlFromDomain(process.env.FRONTEND_URL!);
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
@@ -60,7 +61,7 @@ export async function middleware(request: NextRequest) {
         }
         : {}),
       maxAge: -1,
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      domain: COOKIE_DOMAIN,
     });
     return response;
   }
@@ -98,7 +99,7 @@ export async function middleware(request: NextRequest) {
             secure: true,
             httpOnly: true,
             sameSite: 'none',
-            domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+            domain: COOKIE_DOMAIN,
           }
           : {}),
         expires: new Date(Date.now() + 15 * 60 * 1000),
@@ -128,7 +129,7 @@ export async function middleware(request: NextRequest) {
               secure: true,
               httpOnly: true,
               sameSite: 'none',
-              domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+              domain: COOKIE_DOMAIN,
             }
             : {}),
           expires: new Date(Date.now() + 15 * 60 * 1000),
