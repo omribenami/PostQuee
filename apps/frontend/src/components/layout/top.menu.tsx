@@ -235,39 +235,39 @@ export const TopMenu: FC = () => {
   const { isGeneral, billingEnabled } = useVariables();
   return (
     <>
-      <div className="flex flex-1 flex-col gap-[16px] blurMe">
+      <div className="flex flex-1 flex-col gap-[16px] blurMe min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-newBorder scrollbar-track-transparent">
         {
           // @ts-ignore
           user?.orgId &&
-            // @ts-ignore
-            (user.tier !== 'FREE' || !isGeneral || !billingEnabled) &&
-            firstMenu
-              .filter((f) => {
-                if (f.hide) {
-                  return false;
-                }
-                if (f.requireBilling && !billingEnabled) {
-                  return false;
-                }
-                if (f.name === 'Billing' && user?.isLifetime) {
-                  return false;
-                }
-                if (f.role) {
-                  return f.role.includes(user?.role!);
-                }
-                return true;
-              })
-              .map((item, index) => (
-                <MenuItem
-                  path={item.path}
-                  label={item.name}
-                  icon={item.icon}
-                  key={item.name}
-                />
-              ))
+          // @ts-ignore
+          (user.tier !== 'FREE' || !isGeneral || !billingEnabled) &&
+          firstMenu
+            .filter((f) => {
+              if (f.hide) {
+                return false;
+              }
+              if (f.requireBilling && !billingEnabled) {
+                return false;
+              }
+              if (f.name === 'Billing' && user?.isLifetime) {
+                return false;
+              }
+              if (f.role) {
+                return f.role.includes(user?.role!);
+              }
+              return true;
+            })
+            .map((item, index) => (
+              <MenuItem
+                path={item.path}
+                label={item.name}
+                icon={item.icon}
+                key={item.name}
+              />
+            ))
         }
       </div>
-      <div className="flex flex-col gap-[16px] blurMe">
+      <div className="flex flex-col gap-[16px] blurMe shrink-0">
         {secondMenu
           .filter((f) => {
             if (f.hide) {

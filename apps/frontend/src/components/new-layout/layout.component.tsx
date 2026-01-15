@@ -106,23 +106,18 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
               {user.tier === 'FREE' && isGeneral && billingEnabled ? (
                 <FirstBillingComponent />
               ) : (
-                <div className="flex-1 flex gap-[8px]">
+                <div className="flex-1 flex gap-[16px]">
                   <Support />
-                  <div className="flex flex-col bg-newBgColorInner w-[80px] rounded-[12px]">
-                    <div
-                      className={clsx(
-                        'fixed h-full w-[64px] start-[17px] flex flex-1 top-0',
-                        user?.admin && 'pt-[60px]'
-                      )}
-                    >
-                      <div className="flex flex-col h-full gap-[32px] flex-1 py-[12px]">
+                  <div className="flex flex-col bg-newBgColorInner w-[80px] rounded-[24px] blur-layout border border-newBorder shadow-2xl z-20 sticky top-[12px] h-[calc(100vh-24px)]">
+                    <div className="flex flex-col h-full w-full items-center py-[12px]">
+                      <div className="flex flex-col h-full gap-[32px] w-full items-center">
                         <Logo />
                         <TopMenu />
                       </div>
                     </div>
                   </div>
-                  <div className="flex-1 bg-newBgLineColor rounded-[12px] overflow-hidden flex flex-col gap-[1px] blurMe">
-                    <div className="flex bg-newBgColorInner h-[80px] px-[20px] items-center">
+                  <div className="flex-1 bg-newBgLineColor rounded-[24px] overflow-hidden flex flex-col gap-[1px] blurMe border border-newBorder shadow-2xl z-10">
+                    <div className="flex bg-newBgColorInner h-[80px] px-[20px] items-center blur-layout">
                       <div className="text-[24px] font-[600] flex flex-1">
                         <Title />
                       </div>
