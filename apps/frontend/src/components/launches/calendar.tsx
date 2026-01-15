@@ -640,7 +640,7 @@ export const CalendarColumn: FC<{
   return (
     <div
       className={clsx(
-        'flex flex-col w-full min-h-full relative',
+        'flex flex-col w-full min-h-full relative bg-newBgColorInner',
         isBeforeNow && 'repeated-strip',
         loading && 'animate-pulse',
         isBeforeNow

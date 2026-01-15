@@ -7,12 +7,23 @@
 @import '@uppy/dashboard/dist/style.css';
 
 body {
-  background: var(--new-bgColor) !important;
+  background-color: var(--new-bgColor) !important;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(at 0% 0%, rgba(255, 105, 0, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%) !important;
+  background-size: 24px 24px, 100% 100%, 100% 100%;
+  background-attachment: fixed;
   color: var(--new-btn-text);
 }
 
 body * {
   outline: none !important;
+}
+
+.blur-layout {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .box {
@@ -803,6 +814,7 @@ html[dir='rtl'] [dir='ltr'] {
   background: var(--new-btn-primary) !important;
   color: #fff !important;
 }
+
 /* --- MODERN HIGH TECH OVERRIDES --- */
 
 /* Sleek Scrollbars */
@@ -810,13 +822,16 @@ html[dir='rtl'] [dir='ltr'] {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
@@ -833,11 +848,10 @@ html[dir='rtl'] [dir='ltr'] {
   background: rgba(18, 21, 28, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08); 
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* High Tech Glow on Primary Elements */
 .glow-primary {
   box-shadow: 0 0 15px rgba(255, 105, 0, 0.15);
 }
-
