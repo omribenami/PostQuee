@@ -268,4 +268,39 @@ export class OpenaiService {
 
     return [];
   }
+
+  async refineContent(content: string, prompt: string): Promise<string> {
+    const prompts: Record<string, string> = {
+      improve: 'Make this social media post more engaging and professional while maintaining its core message. Enhance clarity and impact.',
+      shorten: 'Reduce the length of this social media post while keeping the key points. Make it concise and punchy.',
+      expand: 'Expand this social media post with more details and context. Make it more informative and comprehensive.',
+      casual: 'Rewrite this social media post in a more friendly and casual tone. Make it conversational and approachable.',
+      professional: 'Rewrite this social media post in a more formal and professional tone. Make it suitable for business contexts.',
+      emojis: 'Add relevant emojis to this social media post to make it more engaging and visually appealing. Use emojis thoughtfully.',
+    };
+
+    const systemPrompt = prompts[prompt] || prompts.improve;
+
+    try {
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4.1',
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt,
+          },
+          {
+            role: 'user',
+            content: content,
+          },
+        ],
+        temperature: 0.7,
+      });
+
+      return completion.choices[0].message.content || content;
+    } catch (err) {
+      console.error('AI refine error:', err);
+      throw new Error('Failed to refine content with AI');
+    }
+  }
 }

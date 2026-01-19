@@ -31,16 +31,18 @@ import axios from 'axios';
 import { Readable } from 'stream';
 import { lookup } from 'mime-types';
 import * as Sentry from '@sentry/nestjs';
+import { OpenaiService } from '@gitroom/nestjs-libraries/openai/openai.service';
 
 @ApiTags('Public API')
 @Controller('/public/v1')
 export class PublicIntegrationsController {
   private storage = UploadFactory.createStorage();
-  
+
   constructor(
     private _integrationService: IntegrationService,
     private _postsService: PostsService,
-    private _mediaService: MediaService
+    private _mediaService: MediaService,
+    private _openaiService: OpenaiService
   ) {}
 
   @Post('/upload')
@@ -188,5 +190,33 @@ export class PublicIntegrationsController {
       body.functionName,
       body.params
     );
+  }
+
+  @Post('/ai/refine')
+  async refineContent(
+    @GetOrgFromRequest() org: Organization,
+    @Body() body: { content: string; prompt: string }
+  ) {
+    Sentry.metrics.count("public_api-request", 1);
+
+    if (!body.content || !body.prompt) {
+      throw new HttpException(
+        { msg: 'Content and prompt are required' },
+        400
+      );
+    }
+
+    try {
+      const refined = await this._openaiService.refineContent(
+        body.content,
+        body.prompt
+      );
+      return { success: true, refined };
+    } catch (error: any) {
+      throw new HttpException(
+        { msg: error?.message || 'AI refinement failed' },
+        500
+      );
+    }
   }
 }
