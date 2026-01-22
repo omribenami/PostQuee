@@ -240,3 +240,7 @@ docker-compose.local.yml
 apps/frontend/public/Antigravity*.exe
 postqueeV3.tar
 node-compile-cache/
+db-data/
+docker-compose.yaml.*
+wp-content/
+npm/
