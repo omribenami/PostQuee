@@ -271,12 +271,12 @@ export class OpenaiService {
 
   async refineContent(content: string, prompt: string): Promise<string> {
     const prompts: Record<string, string> = {
-      improve: 'Make this social media post more engaging and professional while maintaining its core message. Enhance clarity and impact.',
-      shorten: 'Reduce the length of this social media post while keeping the key points. Make it concise and punchy.',
-      expand: 'Expand this social media post with more details and context. Make it more informative and comprehensive.',
-      casual: 'Rewrite this social media post in a more friendly and casual tone. Make it conversational and approachable.',
-      professional: 'Rewrite this social media post in a more formal and professional tone. Make it suitable for business contexts.',
-      emojis: 'Add relevant emojis to this social media post to make it more engaging and visually appealing. Use emojis thoughtfully.',
+      improve: 'Make this social media post more engaging and professional while maintaining its core message. Enhance clarity and impact. IMPORTANT: Return ONLY the refined post text, no explanations or narration.',
+      shorten: 'Reduce the length of this social media post while keeping the key points. Make it concise and punchy. IMPORTANT: Return ONLY the shortened post text, no explanations or narration.',
+      expand: 'Expand this social media post with more details and context. Make it more informative and comprehensive. IMPORTANT: Return ONLY the expanded post text, no explanations or narration.',
+      casual: 'Rewrite this social media post in a more friendly and casual tone. Make it conversational and approachable. IMPORTANT: Return ONLY the rewritten post text, no explanations or narration.',
+      professional: 'Rewrite this social media post in a more formal and professional tone. Make it suitable for business contexts. IMPORTANT: Return ONLY the rewritten post text, no explanations or narration.',
+      emojis: 'Add relevant emojis to this social media post to make it more engaging and visually appealing. Use emojis thoughtfully. IMPORTANT: Return ONLY the post text with emojis added, no explanations or narration.',
     };
 
     const systemPrompt = prompts[prompt] || prompts.improve;
@@ -287,7 +287,7 @@ export class OpenaiService {
         messages: [
           {
             role: 'system',
-            content: systemPrompt,
+            content: `${systemPrompt}\n\nRemember: Output only the refined text with no additional commentary, explanations, or formatting.`,
           },
           {
             role: 'user',
