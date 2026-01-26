@@ -244,3 +244,6 @@ db-data/
 docker-compose.yaml.*
 wp-content/
 npm/
+
+# Auto Claude data directory
+.auto-claude/

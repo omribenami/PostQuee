@@ -119,11 +119,11 @@ export class OpenaiService {
         try {
           return JSON.parse(
             '[' +
-              content
-                ?.slice(start + 1, end)
-                .replace(/\n/g, ' ')
-                .replace(/ {2,}/g, ' ') +
-              ']'
+            content
+              ?.slice(start + 1, end)
+              .replace(/\n/g, ' ')
+              .replace(/ {2,}/g, ' ') +
+            ']'
           );
         } catch (e) {
           return [];
@@ -168,9 +168,8 @@ export class OpenaiService {
           messages: [
             {
               role: 'system',
-              content: `You are an assistant that take a social media post and break it to a thread, each post must be minimum ${
-                len - 10
-              } and maximum ${len} characters, keeping the exact wording and break lines, however make sure you split posts based on context`,
+              content: `You are an assistant that take a social media post and break it to a thread, each post must be minimum ${len - 10
+                } and maximum ${len} characters, keeping the exact wording and break lines, however make sure you split posts based on context`,
             },
             {
               role: 'user',
@@ -269,7 +268,7 @@ export class OpenaiService {
     return [];
   }
 
-  async refineContent(content: string, prompt: string): Promise<string> {
+  async refineContent(content: string, prompt: string, maxLength?: number): Promise<string> {
     const prompts: Record<string, string> = {
       improve: 'Make this social media post more engaging and professional while maintaining its core message. Enhance clarity and impact. IMPORTANT: Return ONLY the refined post text, no explanations or narration.',
       shorten: 'Reduce the length of this social media post while keeping the key points. Make it concise and punchy. IMPORTANT: Return ONLY the shortened post text, no explanations or narration.',
@@ -279,7 +278,11 @@ export class OpenaiService {
       emojis: 'Add relevant emojis to this social media post to make it more engaging and visually appealing. Use emojis thoughtfully. IMPORTANT: Return ONLY the post text with emojis added, no explanations or narration.',
     };
 
-    const systemPrompt = prompts[prompt] || prompts.improve;
+    let systemPrompt = prompts[prompt] || prompts.improve;
+
+    if (maxLength) {
+      systemPrompt += `\n\nCRITICAL CONSTRAINT: The output MUST be ${maxLength} characters or less. If the content is longer, you MUST shorten it to fit while preserving meaning. This is a hard limit.`;
+    }
 
     try {
       const completion = await openai.chat.completions.create({

@@ -4,6 +4,7 @@ import { StripeService } from '@gitroom/nestjs-libraries/services/stripe.service
 import { PoliciesGuard } from '@gitroom/backend/services/auth/permissions/permissions.guard';
 import { PermissionsService } from '@gitroom/backend/services/auth/permissions/permissions.service';
 import { IntegrationManager } from '@gitroom/nestjs-libraries/integrations/integration.manager';
+import { RefreshIntegrationService } from '@gitroom/nestjs-libraries/integrations/refresh.integration.service';
 import { UploadModule } from '@gitroom/nestjs-libraries/upload/upload.module';
 import { OpenaiService } from '@gitroom/nestjs-libraries/openai/openai.service';
 import { ExtractContentService } from '@gitroom/nestjs-libraries/openai/extract.content.service';
@@ -24,6 +25,7 @@ const authenticatedController = [PublicIntegrationsController];
     PermissionsService,
     CodesService,
     IntegrationManager,
+    RefreshIntegrationService,
   ],
   get exports() {
     return [...this.imports, ...this.providers];

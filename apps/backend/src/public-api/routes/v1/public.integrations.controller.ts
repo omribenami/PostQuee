@@ -32,6 +32,11 @@ import { Readable } from 'stream';
 import { lookup } from 'mime-types';
 import * as Sentry from '@sentry/nestjs';
 import { OpenaiService } from '@gitroom/nestjs-libraries/openai/openai.service';
+import { IntegrationManager } from '@gitroom/nestjs-libraries/integrations/integration.manager';
+import { RefreshIntegrationService } from '@gitroom/nestjs-libraries/integrations/refresh.integration.service';
+import { IntegrationFunctionDto } from '@gitroom/nestjs-libraries/dtos/integrations/integration.function.dto';
+import { RefreshToken } from '@gitroom/nestjs-libraries/integrations/social.abstract';
+import { timer } from '@gitroom/helpers/utils/timer';
 
 @ApiTags('Public API')
 @Controller('/public/v1')
@@ -42,8 +47,10 @@ export class PublicIntegrationsController {
     private _integrationService: IntegrationService,
     private _postsService: PostsService,
     private _mediaService: MediaService,
-    private _openaiService: OpenaiService
-  ) {}
+    private _openaiService: OpenaiService,
+    private _integrationManager: IntegrationManager,
+    private _refreshIntegrationService: RefreshIntegrationService
+  ) { }
 
   @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
@@ -165,9 +172,9 @@ export class PublicIntegrationsController {
         profile: org.profile,
         customer: org.customer
           ? {
-              id: org.customer.id,
-              name: org.customer.name,
-            }
+            id: org.customer.id,
+            name: org.customer.name,
+          }
           : undefined,
       })
     );
@@ -195,7 +202,7 @@ export class PublicIntegrationsController {
   @Post('/ai/refine')
   async refineContent(
     @GetOrgFromRequest() org: Organization,
-    @Body() body: { content: string; prompt: string }
+    @Body() body: { content: string; prompt: string; maxLength?: number }
   ) {
     Sentry.metrics.count("public_api-request", 1);
 
@@ -209,7 +216,8 @@ export class PublicIntegrationsController {
     try {
       const refined = await this._openaiService.refineContent(
         body.content,
-        body.prompt
+        body.prompt,
+        body.maxLength
       );
       return { success: true, refined };
     } catch (error: any) {
@@ -218,5 +226,66 @@ export class PublicIntegrationsController {
         500
       );
     }
+  }
+
+  @Post('/integration/function')
+  async functionIntegration(
+    @GetOrgFromRequest() org: Organization,
+    @Body() body: IntegrationFunctionDto
+  ): Promise<any> {
+    Sentry.metrics.count("public_api-request", 1);
+    const getIntegration = await this._integrationService.getIntegrationById(
+      org.id,
+      body.id
+    );
+    if (!getIntegration) {
+      throw new Error('Invalid integration');
+    }
+
+    const integrationProvider = this._integrationManager.getSocialIntegration(
+      getIntegration.providerIdentifier
+    );
+    if (!integrationProvider) {
+      throw new Error('Invalid provider');
+    }
+
+    // @ts-ignore
+    if (integrationProvider[body.name]) {
+      try {
+        // @ts-ignore
+        const load = await integrationProvider[body.name](
+          getIntegration.token,
+          body.data,
+          getIntegration.internalId,
+          getIntegration
+        );
+
+        return load;
+      } catch (err) {
+        if (err instanceof RefreshToken) {
+          const data = await this._refreshIntegrationService.refresh(
+            getIntegration
+          );
+
+          if (!data) {
+            return;
+          }
+
+          const { accessToken } = data;
+
+          if (accessToken) {
+            if (integrationProvider.refreshWait) {
+              await timer(10000);
+            }
+            return this.functionIntegration(org, body);
+          }
+
+          return false;
+        }
+
+        return false;
+      }
+    }
+    throw new Error('Function not found');
   }
 }
