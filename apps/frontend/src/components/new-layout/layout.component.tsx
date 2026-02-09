@@ -1,5 +1,4 @@
 'use client';
-import { MobileNav } from '@gitroom/frontend/components/new-layout/mobile-nav.component';
 
 import React, { ReactNode, useCallback } from 'react';
 import { Logo } from '@gitroom/frontend/components/new-layout/logo';
@@ -102,7 +101,7 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
                 jakartaSans.className
               )}
             >
-              <div>{user?.admin ? <Impersonate /> : <div />}</div>
+              <div className="relative z-[100]">{user?.role === 'SUPERADMIN' ? <Impersonate /> : <div />}</div>
               {user.tier === 'FREE' && isGeneral && billingEnabled ? (
                 <FirstBillingComponent />
               ) : (
@@ -117,7 +116,7 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
                     </div>
                   </div>
                   <div className="flex-1 bg-newBgLineColor rounded-[24px] overflow-hidden flex flex-col gap-[1px] blurMe border border-newBorder shadow-2xl z-10">
-                    <div className="flex bg-newBgColorInner h-[80px] px-[20px] items-center blur-layout">
+                    <div className="flex bg-newBgColorInner h-[80px] px-[20px] items-center blur-layout relative z-[1000]">
                       <div className="text-[24px] font-[600] flex flex-1">
                         <Title />
                       </div>

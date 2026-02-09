@@ -47,14 +47,7 @@ export const PublicComponent = () => {
               'Read how to use it over the documentation.'
             )}
           </a>
-          <a
-            className="underline hover:font-bold hover:underline"
-            href="https://www.npmjs.com/package/n8n-nodes-postiz"
-            target="_blank"
-          >
-            <br />
-            {t('check_n8n', 'Check out our N8N custom node for Postquee.')}
-          </a>
+
         </div>
         <div className="flex flex-col">
           <div className="my-[16px] mt-[16px] bg-sixth border-fifth items-center border rounded-[4px] p-[24px] flex gap-[24px]">

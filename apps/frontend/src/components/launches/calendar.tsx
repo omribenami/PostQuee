@@ -204,11 +204,11 @@ export const WeekView = () => {
     <div className="flex flex-col text-textColor flex-1">
       <div className="flex-1 relative">
         <div className="grid [grid-template-columns:136px_repeat(7,_minmax(0,_1fr))] gap-[4px] rounded-[10px] absolute h-full start-0 top-0 w-full overflow-auto scrollbar scrollbar-thumb-fifth scrollbar-track-newBgColor">
-          <div className="z-10 bg-newTableHeader flex justify-center items-center flex-col h-[62px] rounded-[8px] sticky top-0"></div>
+          <div className="z-10 bg-[var(--new-settings)] flex justify-center items-center flex-col h-[62px] rounded-[8px] sticky top-0"></div>
           {localizedDays.map((day, index) => (
             <div
               key={day.name}
-              className="p-2 text-center bg-newTableHeader flex justify-center items-center flex-col h-[62px] rounded-[8px] sticky top-0 z-[20]"
+              className="p-2 text-center bg-[var(--new-settings)] flex justify-center items-center flex-col h-[62px] rounded-[8px] sticky top-0 z-[20]"
             >
               <div className="text-[14px] font-[500] text-newTableText">
                 {day.name}
@@ -306,7 +306,7 @@ export const MonthView = () => {
           {localizedDays.map((day) => (
             <div
               key={day}
-              className="z-[20] p-2 bg-newTableHeader flex justify-center items-center flex-col h-[62px] rounded-[8px] sticky top-0"
+              className="z-[20] p-2 bg-[var(--new-settings)] flex justify-center items-center flex-col h-[62px] rounded-[8px] sticky top-0"
             >
               <div>{day}</div>
             </div>
@@ -654,7 +654,7 @@ export const CalendarColumn: FC<{
       )}
       <div
         className={clsx(
-          'relative flex flex-col flex-1 text-white rounded-[8px] min-h-[70px]',
+          'relative flex flex-col flex-1 text-textColor rounded-[8px] min-h-[70px]',
           canDrop && 'border border-[#FF8C00]'
         )}
       >

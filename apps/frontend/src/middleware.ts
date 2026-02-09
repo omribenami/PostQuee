@@ -1,15 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getCookieUrlFromDomain } from '@gitroom/helpers/subdomain/subdomain.management';
-import { internalFetch } from '@gitroom/helpers/utils/internal.fetch';
-import acceptLanguage from 'accept-language';
+import { customFetch } from '@gitroom/helpers/utils/custom.fetch.func';
 import {
   cookieName,
   fallbackLng,
   headerName,
   languages,
 } from '@gitroom/react/translation/i18n.config';
-acceptLanguage.languages(languages);
 
 // Cookie configuration - can be overridden via env vars for dev/prod separation
 const AUTH_COOKIE_NAME = process.env.COOKIE_NAME || 'auth';
@@ -20,15 +18,15 @@ const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || getCookieUrlFromDomain(proces
 export async function middleware(request: NextRequest) {
   const nextUrl = request.nextUrl;
   const authCookie =
-    request.cookies.get(AUTH_COOKIE_NAME) ||
+    request.cookies.get(AUTH_COOKIE_NAME)?.value ||
     request.headers.get(AUTH_COOKIE_NAME) ||
     nextUrl.searchParams.get('loggedAuth');
+
+  const acceptLanguageHeader = request.headers.get('Accept-Language') || request.headers.get('accept-language');
+  const preferredLanguage = acceptLanguageHeader?.split(',')[0].split('-')[0] || fallbackLng;
   const lng = request.cookies.has(cookieName)
-    ? acceptLanguage.get(request.cookies.get(cookieName).value)
-    : acceptLanguage.get(
-      request.headers.get('Accept-Language') ||
-      request.headers.get('accept-language')
-    );
+    ? request.cookies.get(cookieName)?.value
+    : languages.includes(preferredLanguage) ? preferredLanguage : fallbackLng;
 
   const topResponse = NextResponse.next();
 
@@ -112,7 +110,11 @@ export async function middleware(request: NextRequest) {
   try {
     if (org) {
       const { id } = await (
-        await internalFetch('/user/join-org', {
+        await customFetch(
+          { baseUrl: process.env.BACKEND_INTERNAL_URL! },
+          authCookie,
+          request.cookies.get('showorg')?.value
+        )('/user/join-org', {
           body: JSON.stringify({
             org,
           }),

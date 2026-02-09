@@ -202,7 +202,7 @@ export class PublicIntegrationsController {
   @Post('/ai/refine')
   async refineContent(
     @GetOrgFromRequest() org: Organization,
-    @Body() body: { content: string; prompt: string; maxLength?: number }
+    @Body() body: { content: string; prompt: string }
   ) {
     Sentry.metrics.count("public_api-request", 1);
 
@@ -216,13 +216,13 @@ export class PublicIntegrationsController {
     try {
       const refined = await this._openaiService.refineContent(
         body.content,
-        body.prompt,
-        body.maxLength
+        body.prompt
       );
       return { success: true, refined };
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'AI refinement failed';
       throw new HttpException(
-        { msg: error?.message || 'AI refinement failed' },
+        { msg: message },
         500
       );
     }

@@ -30,7 +30,7 @@ const useFaqList = () => {
       ),
       description: t(
         'faq_postiz_gitroom_is_proudly_open_source',
-        'PostQuee is proudly open-source! We believe in an ethical and transparent culture, meaning that PostQuee will live forever. You can check out the entire code or use it for personal projects. To view the open-source repository, <a href="https://github.com/gitroomhq/postiz-app" target="_blank" style="text-decoration: underline;">click here</a>.'
+        'PostQuee is proudly open-source! PostQuee (<a href="https://github.com/omribenami/PostQuee" target="_blank" style="text-decoration: underline;">https://github.com/omribenami/PostQuee</a>) is a fork of the great postiz app made by Nevo David. We believe in an ethical and transparent culture, meaning that PostQuee will live forever. You can check out the entire code or use it for personal projects. To view the open-source repository, <a href="https://github.com/omribenami/PostQuee" target="_blank" style="text-decoration: underline;">click here</a>.'
       ),
     },
     {
